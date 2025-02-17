@@ -4,25 +4,27 @@
 void UDP_OverlayWidgetController::BroadcastInitialValues()
 {
 	UDP_AttributeSet* AttributeSet = CastChecked<UDP_AttributeSet>(AttributeSetRef);
-	AttributeSet->GetHealthAttribute();
 	OnHealthChange.Broadcast(AttributeSet->GetHealth());
 	OnMaxHealthChange.Broadcast(AttributeSet->GetMaxHealth());
+	OnAbilityResourceChange.Broadcast(AttributeSet->GetAbilityResource());
+	OnMaxAbilityResourceChange.Broadcast(AttributeSet->GetMaxAbilityResource());
 }
 
 void UDP_OverlayWidgetController::BindCallbacksToDependencies()
 {
 	UDP_AttributeSet* AttributeSet = CastChecked<UDP_AttributeSet>(AttributeSetRef);
 
-	if (AttributeSet->GetHealthAttribute() == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UDP_OverlayWidgetController::BindCallbacksToDependencies: Health attribute is null!"));
-		
-		//AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())
-		//                         .AddUObject(this, &UDP_OverlayWidgetController::HealthChanged);
+	AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())
+	                         .AddUObject(this, &UDP_OverlayWidgetController::HealthChanged);
 
-		//AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute())
-		//                         .AddUObject(this, &UDP_OverlayWidgetController::MaxHealthChanged);
-	}
+	AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute())
+	                         .AddUObject(this, &UDP_OverlayWidgetController::MaxHealthChanged);
+
+	AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetAbilityResourceAttribute())
+	                         .AddUObject(this, &UDP_OverlayWidgetController::AbilityResourceChanged);
+
+	AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAbilityResourceAttribute())
+	                         .AddUObject(this, &UDP_OverlayWidgetController::MaxAbilityResourceChanged);
 }
 
 void UDP_OverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data)
@@ -33,4 +35,16 @@ void UDP_OverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Da
 void UDP_OverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
 	OnMaxHealthChange.Broadcast(Data.NewValue);
+}
+
+void UDP_OverlayWidgetController::AbilityResourceChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AbilityResourceChanged: %f"), Data.NewValue);
+	OnAbilityResourceChange.Broadcast(Data.NewValue);
+}
+
+void UDP_OverlayWidgetController::MaxAbilityResourceChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("MaxAbilityResourceChanged: %f"), Data.NewValue);
+	OnMaxAbilityResourceChange.Broadcast(Data.NewValue);
 }

@@ -19,10 +19,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnAttributeChange OnMaxHealthChange;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChange OnAbilityResourceChange;
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChange OnMaxAbilityResourceChange;
+
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 protected:
 
 	void HealthChanged(const FOnAttributeChangeData& Data);
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
+	void AbilityResourceChanged(const FOnAttributeChangeData& Data);
+	void MaxAbilityResourceChanged(const FOnAttributeChangeData& Data);
 };

@@ -9,21 +9,10 @@ void ADP_PlayerController::SetupInputComponent()
 	EnhancedInputComponentRef = CastChecked<UEnhancedInputComponent>(InputComponent);
 }
 
-void ADP_PlayerController::OnPossess(APawn* aPawn)
+void ADP_PlayerController::SetupController(APawn* aPawn)
 {
-	Super::OnPossess(aPawn);
-
 	PlayerCharacterRef = CastChecked<ADP_PlayerCharacter>(aPawn);
 	checkf(PlayerCharacterRef, TEXT("ADP_PlayerController::OnPossess: PlayerController can only possess a Character"));
-
-	if (!InputComponent)
-	{
-		SetupInputComponent();
-		UE_LOG(LogTemp, Error, TEXT("ADP_PlayerController::OnPossess: InputComponent is nullptr!"));
-	}
-
-	EnhancedInputComponentRef = Cast<UEnhancedInputComponent>(InputComponent);
-	checkf(EnhancedInputComponentRef, TEXT("ADP_PlayerController::OnPossess: InputComponentRef is nullptr!"));
 
 	InputSubsystemRef = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	if (InputSubsystemRef)
@@ -31,6 +20,21 @@ void ADP_PlayerController::OnPossess(APawn* aPawn)
 		InputSubsystemRef->AddMappingContext(MappingContext, 0);
 	}
 	BindInputActions();
+}
+
+void ADP_PlayerController::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+	SetupController(GetPawn());
+}
+
+void ADP_PlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+	if (IsLocalController())
+	{
+		SetupController(aPawn);
+	}
 }
 
 void ADP_PlayerController::BindInputActions()

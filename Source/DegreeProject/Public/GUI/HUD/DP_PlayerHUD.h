@@ -18,7 +18,6 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UDP_UserWidgetBase> OverlayWidgetRef{};
-
 	
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 	UDP_OverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& Params);

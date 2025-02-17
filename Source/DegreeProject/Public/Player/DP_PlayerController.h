@@ -16,11 +16,13 @@ class DEGREEPROJECT_API ADP_PlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 
+	virtual void OnRep_Pawn() override;
 	
 protected:
 	
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void SetupInputComponent() override;
+	void SetupController(APawn* aPawn);
 
 private:
 
@@ -50,4 +52,5 @@ private:
 	void BindInputActions();
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
+
 };

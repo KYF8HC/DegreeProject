@@ -20,9 +20,7 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilit
 	UDP_OverlayWidgetController* WidgetControllerRef = GetOverlayWidgetController(Params);
 	
 	OverlayWidgetRef->SetWidgetController(WidgetControllerRef);
-	WidgetControllerRef->BroadcastInitialValues();
-	WidgetControllerRef->BindCallbacksToDependencies();
-	
+	WidgetControllerRef->BroadcastInitialValues();	
 	Widget->AddToViewport();
 }
 
@@ -32,6 +30,7 @@ UDP_OverlayWidgetController* ADP_PlayerHUD::GetOverlayWidgetController(const FWi
 	{
 		OverlayWidgetControllerRef = NewObject<UDP_OverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetControllerRef->SetWidgetControllerParams(Params);
+		OverlayWidgetControllerRef->BindCallbacksToDependencies();
 	}
 
 	return OverlayWidgetControllerRef;

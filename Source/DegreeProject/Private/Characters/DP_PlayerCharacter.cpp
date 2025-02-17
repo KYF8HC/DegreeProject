@@ -34,6 +34,7 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	//Init for client
+	PlayerControllerRef = Cast<ADP_PlayerController>(GetController());
 	InitAbilityActorInfo();
 }
 
