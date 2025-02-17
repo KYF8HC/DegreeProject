@@ -7,3 +7,13 @@ void UDP_WidgetController::SetWidgetControllerParams(const FWidgetControllerPara
 	AbilitySystemComponentRef = Params.AbilitySystemComponent;
 	AttributeSetRef = Params.AttributeSet;
 }
+
+void UDP_WidgetController::BroadcastInitialValues()
+{
+	
+}
+
+void UDP_WidgetController::BindCallbacksToDependencies()
+{
+	
+}

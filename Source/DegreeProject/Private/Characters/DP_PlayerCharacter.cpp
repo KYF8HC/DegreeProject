@@ -3,6 +3,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
+#include "GUI/HUD/DP_PlayerHUD.h"
+#include "Player/DP_PlayerController.h"
 #include "Player/DP_PlayerState.h"
 
 
@@ -15,12 +17,13 @@ ADP_PlayerCharacter::ADP_PlayerCharacter()
 
 	CameraComponentRef = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponentRef->SetupAttachment(SpringArmComponentRef);
-	
 }
 
 void ADP_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	PlayerControllerRef = Cast<ADP_PlayerController>(NewController);
 
 	//Init for server
 	InitAbilityActorInfo();
@@ -66,5 +69,12 @@ void ADP_PlayerCharacter::InitAbilityActorInfo()
 	AttributeSetRef = CastChecked<UDP_AttributeSet>(PS->GetAttributeSet());
 
 	AbilitySystemComponentRef->InitAbilityActorInfo(PS, this);
+	if (PlayerControllerRef)
+	{
+		ADP_PlayerHUD* HUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
+		if (HUD)
+		{
+			HUD->InitOverlay(PlayerControllerRef, GetPlayerState(), AbilitySystemComponentRef, AttributeSetRef);
+		}
+	}
 }
-

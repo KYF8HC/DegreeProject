@@ -4,6 +4,7 @@
 #include "DP_BaseCharacter.h"
 #include "DP_PlayerCharacter.generated.h"
 
+class ADP_PlayerController;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -38,5 +39,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponentRef{};
 
+	UPROPERTY()
+	TObjectPtr<ADP_PlayerController> PlayerControllerRef{};
+	
 	void InitAbilityActorInfo();
 };

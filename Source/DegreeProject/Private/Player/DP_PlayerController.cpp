@@ -26,9 +26,10 @@ void ADP_PlayerController::OnPossess(APawn* aPawn)
 	checkf(EnhancedInputComponentRef, TEXT("ADP_PlayerController::OnPossess: InputComponentRef is nullptr!"));
 
 	InputSubsystemRef = GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	checkf(InputSubsystemRef, TEXT("ADP_PlayerController::OnPossess: InputSubsystemRef is nullptr!"));
-	InputSubsystemRef->AddMappingContext(MappingContext, 0);
-
+	if (InputSubsystemRef)
+	{
+		InputSubsystemRef->AddMappingContext(MappingContext, 0);
+	}
 	BindInputActions();
 }
 
