@@ -22,9 +22,7 @@ class DEGREEPROJECT_API UDP_AttributeSet : public UAttributeSet
 	GENERATED_BODY()
 
 public:
-
 	UDP_AttributeSet();
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
@@ -42,6 +40,8 @@ public:
 	FGameplayAttributeData MaxAbilityResource;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxAbilityResource)
 	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth);

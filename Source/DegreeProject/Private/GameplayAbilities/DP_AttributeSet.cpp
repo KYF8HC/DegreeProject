@@ -1,5 +1,6 @@
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
 
 UDP_AttributeSet::UDP_AttributeSet()
 {
@@ -17,6 +18,20 @@ void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, AbilityResource, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, MaxAbilityResource, COND_None, REPNOTIFY_Always);
+}
+
+void UDP_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetAbilityResourceAttribute())
+	{
+		SetAbilityResource(FMath::Clamp(GetAbilityResource(), 0.0f, GetMaxAbilityResource()));
+	}
 }
 
 void UDP_AttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
