@@ -17,6 +17,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UObject* InControllerRef);
+
+	UFUNCTION(BlueprintCallable)
+	void EnableWidget(bool bEnable);
 	
 protected:
 

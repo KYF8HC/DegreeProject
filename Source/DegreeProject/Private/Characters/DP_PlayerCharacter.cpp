@@ -63,13 +63,8 @@ void ADP_PlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ADP_PlayerCharacter::InitAbilityActorInfo()
+void ADP_PlayerCharacter::InitOverlay()
 {
-	auto PS = Cast<ADP_PlayerState>(GetPlayerState());
-	AbilitySystemComponentRef = CastChecked<UDP_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
-	AttributeSetRef = CastChecked<UDP_AttributeSet>(PS->GetAttributeSet());
-
-	AbilitySystemComponentRef->InitAbilityActorInfo(PS, this);
 	if (PlayerControllerRef)
 	{
 		ADP_PlayerHUD* HUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
@@ -78,4 +73,13 @@ void ADP_PlayerCharacter::InitAbilityActorInfo()
 			HUD->InitOverlay(PlayerControllerRef, GetPlayerState(), AbilitySystemComponentRef, AttributeSetRef);
 		}
 	}
+}
+
+void ADP_PlayerCharacter::InitAbilityActorInfo()
+{
+	auto PS = Cast<ADP_PlayerState>(GetPlayerState());
+	AbilitySystemComponentRef = CastChecked<UDP_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
+	AttributeSetRef = CastChecked<UDP_AttributeSet>(PS->GetAttributeSet());
+
+	AbilitySystemComponentRef->InitAbilityActorInfo(PS, this);
 }

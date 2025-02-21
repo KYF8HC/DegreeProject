@@ -14,17 +14,20 @@ UCLASS(Abstract)
 class DEGREEPROJECT_API ADP_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
-public:
 
+public:
 	virtual void OnRep_Pawn() override;
-	
+
+	UFUNCTION(BlueprintCallable)
+	void SetCanReceiveInput(bool bCanReceive);
+
 protected:
-	
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void SetupInputComponent() override;
 	void SetupController(APawn* aPawn);
 
 private:
+	bool bCanReceiveInput{false};
 
 #pragma region Input Actions
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -32,13 +35,13 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> Move{};
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> Look{};
 
 #pragma endregion
 
-#pragma region System References	
+#pragma region System References
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<ADP_PlayerCharacter> PlayerCharacterRef{};
 
@@ -52,5 +55,4 @@ private:
 	void BindInputActions();
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
-
 };

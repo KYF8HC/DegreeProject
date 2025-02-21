@@ -20,12 +20,31 @@ void ADP_PlayerController::SetupController(APawn* aPawn)
 		InputSubsystemRef->AddMappingContext(MappingContext, 0);
 	}
 	BindInputActions();
+
+	SetCanReceiveInput(false);
 }
 
 void ADP_PlayerController::OnRep_Pawn()
 {
 	Super::OnRep_Pawn();
 	SetupController(GetPawn());
+}
+
+void ADP_PlayerController::SetCanReceiveInput(bool bCanReceive)
+{
+	if (bCanReceive)
+	{
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+	}
+	else
+	{
+		FInputModeUIOnly InputMode;
+		SetInputMode(InputMode);
+	}
+	
+	SetShowMouseCursor(!bCanReceive);
+	bCanReceiveInput = bCanReceive;
 }
 
 void ADP_PlayerController::OnPossess(APawn* aPawn)
@@ -45,12 +64,18 @@ void ADP_PlayerController::BindInputActions()
 
 void ADP_PlayerController::HandleMove(const FInputActionValue& Value)
 {
+	if (!bCanReceiveInput)
+		return;
+
 	const FVector2D InputAxisVector = Value.Get<FVector2D>();
 	PlayerCharacterRef->HandleMove(InputAxisVector);
 }
 
 void ADP_PlayerController::HandleLook(const FInputActionValue& Value)
 {
+	if (!bCanReceiveInput)
+		return;
+
 	const FVector2D InputAxisVector = Value.Get<FVector2D>();
 	PlayerCharacterRef->HandleLook(InputAxisVector);
 }

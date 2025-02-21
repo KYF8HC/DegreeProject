@@ -26,10 +26,10 @@ public:
 	
 	void HandleMove(const FVector2D& InputAxisVector);
 	void HandleLook(const FVector2D& InputAxisVector);
+	void InitOverlay();
 	
 protected:
 	virtual void BeginPlay() override;
-
 
 private:
 
