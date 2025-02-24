@@ -18,7 +18,8 @@ public class DegreeProject : ModuleRules
 			"GameplayTags",
 			"GameplayTasks",
 			"GameplayAbilities",
-			"UMG"
+			"UMG",
+			"AIModule"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

@@ -9,27 +9,32 @@ class ADP_PlayerCharacter;
 class ADP_PlayerHUD;
 class ADP_PlayerController;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginDelegate, bool, bFirstTime);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEndDelegate);
+
 UCLASS(Abstract)
 class DEGREEPROJECT_API ADP_GameMode : public AGameModeBase, public IDP_Event
 {
 	GENERATED_BODY()
 
 public:
+
+	ADP_GameMode();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnBeginDelegate OnBeginDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUpdateDelegate OnUpdateDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnEndDelegate OnEndDelegate;
+	
 	virtual void OnBegin(bool bFirstTime) override;
 	virtual void OnUpdate() override;
 	virtual void OnEnd() override;
 	virtual bool IsDone() override;
-
-protected:
-
-	UFUNCTION(BlueprintImplementableEvent, Category="Widget Events")
-	void OnBeginBP(bool bFirstTime);
-
-	UFUNCTION(BlueprintImplementableEvent, Category="Widget Events")
-	void OnUpdateBP();
-
-	UFUNCTION(BlueprintImplementableEvent, Category="Widget Events")
-	void OnEndBP();
 
 private:
 	

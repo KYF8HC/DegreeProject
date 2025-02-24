@@ -7,6 +7,10 @@
 #include "Player/DP_PlayerController.h"
 #include "Player/DP_PlayerState.h"
 
+ADP_GameMode::ADP_GameMode()
+{
+}
+
 void ADP_GameMode::OnBegin(bool bFirstTime)
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -28,18 +32,18 @@ void ADP_GameMode::OnBegin(bool bFirstTime)
 		                          UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerState),
 		                          PlayerState->GetAttributeSet());
 		
-		OnBeginBP(bFirstTime);
+		OnBeginDelegate.Broadcast(bFirstTime);
 	}
 }
 
 void ADP_GameMode::OnUpdate()
 {
-	OnUpdateBP();
+	OnUpdateDelegate.Broadcast();
 }
 
 void ADP_GameMode::OnEnd()
 {
-	OnEndBP();
+	OnEndDelegate.Broadcast();
 }
 
 bool ADP_GameMode::IsDone()

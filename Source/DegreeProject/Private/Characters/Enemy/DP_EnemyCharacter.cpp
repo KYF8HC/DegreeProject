@@ -1,4 +1,9 @@
 ﻿#include "Characters/Enemy/DP_EnemyCharacter.h"
+
+#include "AIController.h"
+#include "Core/DP_GameMode.h"
+#include "Core/Events/AI/DP_AIMoveEvent.h"
+#include "Core/Events/DP_EventHandler.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 
@@ -10,6 +15,21 @@ ADP_EnemyCharacter::ADP_EnemyCharacter()
 	AbilitySystemComponentRef->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSetRef = CreateDefaultSubobject<UDP_AttributeSet>(TEXT("AttributeSet"));
+	
+	EnemyEventHandlerRef = CreateDefaultSubobject<UDP_EventHandler>(TEXT("EnemyEventHandler"));
+}
+
+void ADP_EnemyCharacter::StartDefaultEvent()
+{
+	MoveEventRef = NewObject<UDP_AIMoveEvent>(this, DefaultEventClass);
+	MoveEventRef->SetController(Cast<AAIController>(GetController()));
+	MoveEventRef->SetDependencies(PatrolPath);
+	EnemyEventHandlerRef->PushEvent(MoveEventRef);
+}
+
+void ADP_EnemyCharacter::OnBegin(bool bFirstTime)
+{
+	StartDefaultEvent();
 }
 
 void ADP_EnemyCharacter::BeginPlay()
@@ -17,4 +37,8 @@ void ADP_EnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	AbilitySystemComponentRef->InitAbilityActorInfo(this, this);
+
+	ADP_GameMode* GameMode = Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->OnBeginDelegate.AddDynamic(this, &ADP_EnemyCharacter::OnBegin);
+	//StartDefaultEvent();
 }
