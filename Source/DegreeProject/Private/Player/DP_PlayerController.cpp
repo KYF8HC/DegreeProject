@@ -1,7 +1,11 @@
 ﻿#include "Player/DP_PlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DP_PlayerCharacter.h"
+#include "GUI/HUD/DP_PlayerHUD.h"
+#include "Player/DP_PlayerState.h"
 
 void ADP_PlayerController::SetupInputComponent()
 {
@@ -42,9 +46,25 @@ void ADP_PlayerController::SetCanReceiveInput(bool bCanReceive)
 		FInputModeUIOnly InputMode;
 		SetInputMode(InputMode);
 	}
-	
+
 	SetShowMouseCursor(!bCanReceive);
 	bCanReceiveInput = bCanReceive;
+}
+
+void ADP_PlayerController::OnBegin()
+{
+	OnBeginClient();
+}
+
+void ADP_PlayerController::OnBeginClient_Implementation()
+{
+	SetCanReceiveInput(true);
+	ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(GetHUD());
+	ADP_PlayerState* PlayerStateRef = Cast<ADP_PlayerState>(PlayerState);
+	PlayerHUD->InitOverlay(this,
+	                       PlayerStateRef,
+	                       UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerStateRef),
+	                       PlayerStateRef->GetAttributeSet());
 }
 
 void ADP_PlayerController::OnPossess(APawn* aPawn)

@@ -39,8 +39,5 @@ public:
 private:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Player Systems", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<ADP_PlayerController> PlayerControllerRef{};
-
-	UPROPERTY(BlueprintReadOnly, Category="Player Systems", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<ADP_PlayerHUD> PlayerHUDRef{};
+	TArray<TObjectPtr<ADP_PlayerController>> PlayerControllers{};
 };

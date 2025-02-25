@@ -15,7 +15,6 @@ void UDP_AIMoveEvent::OnBegin(bool bFirstTime)
 
 void UDP_AIMoveEvent::OnUpdate()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Moving to location"));
 	if (ControllerRef && bShouldMove)
 		ControllerRef->MoveToLocation(TargetLocation);
 

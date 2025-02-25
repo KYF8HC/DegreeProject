@@ -1,5 +1,6 @@
 ﻿#include "Core/Events/DP_EventHandler.h"
 #include "Core/Events/DP_Event.h"
+#include "DegreeProject/DegreeProject.h"
 
 UDP_EventHandler::UDP_EventHandler()
 {
@@ -10,6 +11,10 @@ void UDP_EventHandler::PushEvent(TScriptInterface<IDP_Event> Event)
 {
 	if (!Event)
 		return;
+
+	//Are you a client?
+	if (!GetOwner()->HasAuthority())
+		ServerPushEvent(Event.GetObject());
 
 	//already in stack
 	EventStack.RemoveAll([Event](const TScriptInterface<IDP_Event>& e)
@@ -28,6 +33,8 @@ void UDP_EventHandler::PushEvent(TScriptInterface<IDP_Event> Event)
 		CurrentEvent = nullptr;
 	}
 }
+
+
 
 void UDP_EventHandler::RemoveEvent(TScriptInterface<IDP_Event> Event)
 {
@@ -53,7 +60,7 @@ void UDP_EventHandler::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	if (CurrentEvent.GetObject() != nullptr)
 	{
 		const FString EventMessage = FString::Printf(TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, EventMessage);
+		LogOnScreen(this, EventMessage, FColor::Red, 0.0f);
 	}
 }
 
@@ -82,6 +89,7 @@ void UDP_EventHandler::UpdateEvents()
 		CurrentEvent->OnUpdate();
 		if (!EventStack.IsEmpty() && EventStack[0] == CurrentEvent)
 		{
+			//UE_LOG(LogTemp, Log, TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
 			if (CurrentEvent->IsDone())
 			{
 				CurrentEvent->OnEnd();
@@ -89,6 +97,20 @@ void UDP_EventHandler::UpdateEvents()
 				EventStack.RemoveAt(0);
 				CurrentEvent = nullptr;
 			}
+		}
+	}
+}
+
+void UDP_EventHandler::ServerPushEvent_Implementation(UObject* Event)
+{
+	if (Event)
+	{
+		UClass* EventClass = Event->GetClass();
+		if (EventClass->ImplementsInterface(UDP_Event::StaticClass()))
+		{
+			TScriptInterface<IDP_Event> EventInterface;
+			EventInterface.SetObject(Event);
+			PushEvent(EventInterface);
 		}
 	}
 }

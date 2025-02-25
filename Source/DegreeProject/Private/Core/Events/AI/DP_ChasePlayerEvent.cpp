@@ -15,19 +15,19 @@ void UDP_ChasePlayerEvent::OnBegin(bool bFirstTime)
 
 void UDP_ChasePlayerEvent::OnUpdate()
 {
-	if (!ControllerRef->LineOfSightTo(TargetRef))
+	if (!ControllerRef->LineOfSightTo(TargetActorRef))
 	{
 		ControllerRef->StopMovement();
 		EventHandlerRef->RemoveEvent(this);
 		return;
 	}
 	
-	if (TargetRef && bShouldChase)
+	if (TargetActorRef && bShouldChase)
 	{
-		ControllerRef->MoveToActor(TargetRef);
+		ControllerRef->MoveToActor(TargetActorRef);
 	}
 
-	if (FVector::Distance(ControllerRef->GetPawn()->GetActorLocation(), TargetRef->GetActorLocation()) < AttackRange)
+	if (ControllerRef->GetPawn()->GetDistanceTo(TargetActorRef) < AttackRange)
 	{
 		ControllerRef->StopMovement();
 
@@ -36,18 +36,18 @@ void UDP_ChasePlayerEvent::OnUpdate()
 		AttackEvent->SetController(ControllerRef);
 		AttackEvent->SetEventHandler(EventHandlerRef);
 		AttackEvent->PreviousEvent = this;
+		AttackEvent->TargetActorRef = TargetActorRef;
 		
 		EventHandlerRef->PushEvent(AttackEvent);
-		EventHandlerRef->RemoveEvent(this);
 	}
 }
 
 void UDP_ChasePlayerEvent::OnEnd()
 {
-	TargetRef = nullptr;
+	TargetActorRef = nullptr;
 }
 
 bool UDP_ChasePlayerEvent::IsDone()
 {
-	return true;
+	return false;
 }

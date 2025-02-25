@@ -20,4 +20,10 @@ public:
 
 	UPROPERTY()
 	TScriptInterface<IDP_Event> PreviousEvent{};
+
+	UPROPERTY()
+	TObjectPtr<AActor> TargetActorRef{};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI")
+	float AttackRange{130.0f};
 };

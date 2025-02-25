@@ -18,7 +18,7 @@ public:
 	virtual bool IsDone() override;
 
 	UFUNCTION(BlueprintCallable)
-	void SetTarget(AActor* Target) { TargetRef = Target; }
+	void SetTarget(AActor* TargetActor) { TargetActorRef = TargetActor; }
 
 private:
 	bool bShouldChase{true};
@@ -30,5 +30,5 @@ private:
 	TSubclassOf<UDP_AIBaseEvent> AttackEventClass{};
 
 	UPROPERTY()
-	TObjectPtr<AActor> TargetRef{};
+	TObjectPtr<AActor> TargetActorRef{};
 };

@@ -1,6 +1,7 @@
 ﻿#include "Actors/DP_EffectActor.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Characters/DP_PlayerCharacter.h"
 #include "GameFramework/PlayerState.h"
 
 
@@ -109,7 +110,8 @@ void ADP_EffectActor::OnAnyEffectRemoved(const FActiveGameplayEffect& ActiveGame
 			Actor.bIsEffectApplied == false)
 		{
 			Actor.bIsEffectApplied = ApplyEffectToTarget(Actor.OverlappingActorRef, GameplayEffectRef);
-			UE_LOG(LogTemp, Log, TEXT("%s: Applying effect to %s, %s"), *GetName(), *Actor.OverlappingActorRef->GetName(), Actor.bIsEffectApplied ? TEXT("Success") : TEXT("Failed"));
+			UE_LOG(LogTemp, Log, TEXT("%s: Applying effect to %s, %s"), *GetName(),
+			       *Actor.OverlappingActorRef->GetName(), Actor.bIsEffectApplied ? TEXT("Success") : TEXT("Failed"));
 		}
 	}
 }
@@ -123,6 +125,10 @@ void ADP_EffectActor::OnEndOverlap(AActor* TargetActor)
 	if (GameplayEffectRef.RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
 		UE_LOG(LogTemp, Log, TEXT("%s: Effect getting removed"), *GetName())
+
+		ADP_PlayerCharacter* PlayerCharacter = Cast<ADP_PlayerCharacter>(TargetActor);
+		if (!PlayerCharacter)
+			return;
 		RemoveEffectFromTarget(TargetActor);
 	}
 }

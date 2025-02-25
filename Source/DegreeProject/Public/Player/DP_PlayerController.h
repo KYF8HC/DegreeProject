@@ -21,6 +21,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanReceiveInput(bool bCanReceive);
 
+	void OnBegin();
+
+	UFUNCTION(CLient, Reliable)
+	void OnBeginClient();
+
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void SetupInputComponent() override;

@@ -15,8 +15,9 @@ ADP_EnemyCharacter::ADP_EnemyCharacter()
 	AbilitySystemComponentRef->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSetRef = CreateDefaultSubobject<UDP_AttributeSet>(TEXT("AttributeSet"));
-	
+
 	EnemyEventHandlerRef = CreateDefaultSubobject<UDP_EventHandler>(TEXT("EnemyEventHandler"));
+	EnemyEventHandlerRef->SetIsReplicated(true);
 }
 
 void ADP_EnemyCharacter::StartDefaultEvent()
@@ -39,6 +40,7 @@ void ADP_EnemyCharacter::BeginPlay()
 	AbilitySystemComponentRef->InitAbilityActorInfo(this, this);
 
 	ADP_GameMode* GameMode = Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->OnBeginDelegate.AddDynamic(this, &ADP_EnemyCharacter::OnBegin);
+	if (GameMode)
+		GameMode->OnBeginDelegate.AddDynamic(this, &ADP_EnemyCharacter::OnBegin);
 	//StartDefaultEvent();
 }
