@@ -22,6 +22,15 @@ public:
 	virtual void OnEnd() override;
 	virtual bool IsDone() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnBeginBP();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnUpdateBP();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndBP();
+
 	UFUNCTION(BlueprintCallable)
 	void SetController(AAIController* Controller) { ControllerRef = Controller; }
 

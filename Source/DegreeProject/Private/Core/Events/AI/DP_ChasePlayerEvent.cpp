@@ -35,8 +35,7 @@ void UDP_ChasePlayerEvent::OnUpdate()
 			ControllerRef, AttackEventClass);
 		AttackEvent->SetController(ControllerRef);
 		AttackEvent->SetEventHandler(EventHandlerRef);
-		AttackEvent->PreviousEvent = this;
-		AttackEvent->TargetActorRef = TargetActorRef;
+		AttackEvent->SetTargetActorRef(TargetActorRef);
 		
 		EventHandlerRef->PushEvent(AttackEvent);
 	}

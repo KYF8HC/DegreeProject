@@ -8,5 +8,10 @@ UCLASS()
 class DEGREEPROJECT_API UDP_AbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Ability System")
+	TObjectPtr<AActor> TargetActorRef{};
 	
 };

@@ -15,11 +15,8 @@ class DEGREEPROJECT_API UDP_EventHandler : public UActorComponent
 public:
 	UDP_EventHandler();
 
-		
 	UFUNCTION(BlueprintCallable)
 	void PushEvent(TScriptInterface<IDP_Event> Event);
-
-	
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveEvent(TScriptInterface<IDP_Event> Event);

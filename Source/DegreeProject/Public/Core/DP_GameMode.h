@@ -5,6 +5,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "DP_GameMode.generated.h"
 
+class UDP_CharacterClassInfo;
 class ADP_PlayerCharacter;
 class ADP_PlayerHUD;
 class ADP_PlayerController;
@@ -22,6 +23,9 @@ public:
 
 	ADP_GameMode();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+	TObjectPtr<UDP_CharacterClassInfo> CharacterClassInfo;
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnBeginDelegate OnBeginDelegate;
 

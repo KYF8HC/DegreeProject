@@ -5,6 +5,7 @@
 #include "Core/Events/AI/DP_AIMoveEvent.h"
 #include "Core/Events/DP_EventHandler.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
+#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 
 
@@ -42,5 +43,10 @@ void ADP_EnemyCharacter::BeginPlay()
 	ADP_GameMode* GameMode = Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 		GameMode->OnBeginDelegate.AddDynamic(this, &ADP_EnemyCharacter::OnBegin);
+
+	if (HasAuthority())
+	{
+		UDP_AbilitySystemLibrary::GiveStartupAbilities(this, CharacterClass, AbilitySystemComponentRef);
+	}
 	//StartDefaultEvent();
 }

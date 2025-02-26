@@ -12,9 +12,9 @@ void UDP_EventHandler::PushEvent(TScriptInterface<IDP_Event> Event)
 	if (!Event)
 		return;
 
-	//Are you a client?
-	if (!GetOwner()->HasAuthority())
-		ServerPushEvent(Event.GetObject());
+	////Are you a client?
+	//if (!GetOwner()->HasAuthority())
+	//	ServerPushEvent(Event.GetObject());
 
 	//already in stack
 	EventStack.RemoveAll([Event](const TScriptInterface<IDP_Event>& e)
