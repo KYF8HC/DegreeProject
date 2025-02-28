@@ -35,7 +35,6 @@ void UDP_EventHandler::PushEvent(TScriptInterface<IDP_Event> Event)
 }
 
 
-
 void UDP_EventHandler::RemoveEvent(TScriptInterface<IDP_Event> Event)
 {
 	if (!Event || !EventStack.Contains(Event))
@@ -68,7 +67,7 @@ void UDP_EventHandler::UpdateEvents()
 {
 	if (EventStack.Num() == 0)
 		return;
-
+	
 	if (CurrentEvent.GetObject() == nullptr)
 	{
 		StartedEvents.Remove(nullptr);
@@ -86,12 +85,19 @@ void UDP_EventHandler::UpdateEvents()
 
 	if (CurrentEvent.GetObject())
 	{
+		
+		if (bShouldLogEvents)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Current Event: %s is done: %d"), *CurrentEvent.GetObject()->GetName(),
+			   CurrentEvent->IsDone());
+		}
+		
 		CurrentEvent->OnUpdate();
 		if (!EventStack.IsEmpty() && EventStack[0] == CurrentEvent)
 		{
-			//UE_LOG(LogTemp, Log, TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
 			if (CurrentEvent->IsDone())
 			{
+				UE_LOG(LogTemp, Log, TEXT("Current Event: %s is done"), *CurrentEvent.GetObject()->GetName());
 				CurrentEvent->OnEnd();
 				StartedEvents.Remove(CurrentEvent.GetObject());
 				EventStack.RemoveAt(0);
@@ -101,16 +107,16 @@ void UDP_EventHandler::UpdateEvents()
 	}
 }
 
-void UDP_EventHandler::ServerPushEvent_Implementation(UObject* Event)
-{
-	if (Event)
-	{
-		UClass* EventClass = Event->GetClass();
-		if (EventClass->ImplementsInterface(UDP_Event::StaticClass()))
-		{
-			TScriptInterface<IDP_Event> EventInterface;
-			EventInterface.SetObject(Event);
-			PushEvent(EventInterface);
-		}
-	}
-}
+//void UDP_EventHandler::ServerPushEvent_Implementation(UObject* Event)
+//{
+//	if (Event)
+//	{
+//		UClass* EventClass = Event->GetClass();
+//		if (EventClass->ImplementsInterface(UDP_Event::StaticClass()))
+//		{
+//			TScriptInterface<IDP_Event> EventInterface;
+//			EventInterface.SetObject(Event);
+//			PushEvent(EventInterface);
+//		}
+//	}
+//}

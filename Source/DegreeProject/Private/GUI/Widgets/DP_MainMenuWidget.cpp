@@ -18,3 +18,20 @@ void UDP_MainMenuWidget::OnStartGame()
 														GetMainEventHandler();
 	MainEventHandler->PushEvent(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode()));
 }
+
+void UDP_MainMenuWidget::OnBegin(bool bFirstTime)
+{
+	Super::OnBegin(bFirstTime);
+	EnableWidget(true);
+}
+
+void UDP_MainMenuWidget::OnEnd()
+{
+	Super::OnEnd();
+	EnableWidget(false);
+}
+
+bool UDP_MainMenuWidget::IsDone()
+{
+	return false;
+}

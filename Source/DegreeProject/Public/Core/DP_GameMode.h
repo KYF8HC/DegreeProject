@@ -2,9 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "Events/DP_Event.h"
+#include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "DP_GameMode.generated.h"
 
+class UEnvQueryInstanceBlueprintWrapper;
+class ADP_EnemyCharacter;
 class UDP_CharacterClassInfo;
 class ADP_PlayerCharacter;
 class ADP_PlayerHUD;
@@ -44,4 +47,22 @@ private:
 	
 	UPROPERTY(BlueprintReadOnly, Category="Player Systems", meta=(AllowPrivateAccess="true"))
 	TArray<TObjectPtr<ADP_PlayerController>> PlayerControllers{};
+
+	FTimerHandle TimerHandle_SpawnBots{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ADP_EnemyCharacter> EnemyClass{};
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UEnvQuery> SpawnBotQuery{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	float SpawnTimerInterval{5.0f};
+
+	UFUNCTION()
+	void OnBotQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	
+	UFUNCTION()
+	void SpawnBotTimerElapsed();
+	
 };

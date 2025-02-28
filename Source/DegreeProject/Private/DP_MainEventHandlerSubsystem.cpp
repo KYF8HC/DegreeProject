@@ -1,5 +1,4 @@
 ﻿#include "DP_MainEventHandlerSubsystem.h"
-
 #include "Core/Events/DP_EventHandler.h"
 
 UDP_EventHandler* UDP_MainEventHandlerSubsystem::GetMainEventHandler()

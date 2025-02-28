@@ -19,20 +19,21 @@ class DEGREEPROJECT_API ADP_EnemyCharacter : public ADP_BaseCharacter
 
 public:
 	ADP_EnemyCharacter();
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void StartDefaultEvent();
 
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Events")
 	TObjectPtr<UDP_EventHandler> EnemyEventHandlerRef{};
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
 	TArray<FVector> PatrolPath{};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
 	TSubclassOf<UDP_AIBaseEvent> DefaultEventClass{};
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	int32 Level{1};
 	
@@ -44,9 +45,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UDP_AIMoveEvent> MoveEventRef{};
-	
-	UFUNCTION()
-	void OnBegin(bool bFirstTime);
 	
 	virtual void BeginPlay() override;
 };

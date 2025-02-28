@@ -1,7 +1,5 @@
 ﻿#include "Core/Events/AI/DP_AIAttackEvent.h"
 
-#include "AIController.h"
-
 UDP_AIAttackEvent::UDP_AIAttackEvent()
 {
 }
@@ -14,7 +12,18 @@ void UDP_AIAttackEvent::OnBegin(bool bFirstTime)
 
 void UDP_AIAttackEvent::OnUpdate()
 {
-	Super::OnUpdate();
+	if (!bCanAttack)
+		return;
+
+	OnUpdateBP();
+	
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
+	{
+		bCanAttack = true;
+	}, AttackCooldown, false);
+
+	bCanAttack = false;
 }
 
 void UDP_AIAttackEvent::OnEnd()
@@ -24,6 +33,5 @@ void UDP_AIAttackEvent::OnEnd()
 
 bool UDP_AIAttackEvent::IsDone()
 {
-	const bool bIsWithinRange = ControllerRef->GetPawn()->GetDistanceTo(TargetActorRef) > AttackRange;
-	return bIsWithinRange;
+	return bIsDone;
 }

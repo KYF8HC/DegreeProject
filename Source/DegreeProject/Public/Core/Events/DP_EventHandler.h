@@ -21,6 +21,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveEvent(TScriptInterface<IDP_Event> Event);
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
+	bool bShouldLogEvents{false};
 	
 protected:
 
@@ -32,14 +34,14 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Events")
 	TScriptInterface<IDP_Event> CurrentEvent{};
-
+	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void UpdateEvents();
 
 	
-	UFUNCTION(Server, Reliable)
-	void ServerPushEvent(UObject* Event);
+	//UFUNCTION(Server, Reliable)
+	//void ServerPushEvent(UObject* Event);
 
 private:
 
