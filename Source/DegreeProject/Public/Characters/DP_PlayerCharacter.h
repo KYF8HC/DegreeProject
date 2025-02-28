@@ -26,11 +26,12 @@ public:
 	
 	void HandleMove(const FVector2D& InputAxisVector);
 	void HandleLook(const FVector2D& InputAxisVector);
+	void HandleShoot();
 	void InitOverlay();
 	
 protected:
 	virtual void BeginPlay() override;
-
+	virtual void Death() override;
 private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
@@ -38,7 +39,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponentRef{};
-
+	
 	UPROPERTY()
 	TObjectPtr<ADP_PlayerController> PlayerControllerRef{};
 	

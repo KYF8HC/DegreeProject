@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Core/Events/AI/DP_AIBaseEvent.h"
-#include "DP_ChasePlayerEvent.generated.h"
+#include "DP_AIChasePlayerEvent.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
-class DEGREEPROJECT_API UDP_ChasePlayerEvent : public UDP_AIBaseEvent
+class DEGREEPROJECT_API UDP_AIChasePlayerEvent : public UDP_AIBaseEvent
 {
 	GENERATED_BODY()
 
 public:
-	UDP_ChasePlayerEvent();
+	UDP_AIChasePlayerEvent();
 
 	virtual void OnBegin(bool bFirstTime) override;
 	virtual void OnUpdate() override;

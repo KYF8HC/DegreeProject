@@ -2,18 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "DP_AIBaseEvent.h"
-#include "DP_AIMoveEvent.generated.h"
+#include "DP_AIPatrolEvent.generated.h"
 
 class AAIController;
 class UCharacterMovementComponent;
 
 UCLASS(BlueprintType, Blueprintable)
-class DEGREEPROJECT_API UDP_AIMoveEvent : public UDP_AIBaseEvent
+class DEGREEPROJECT_API UDP_AIPatrolEvent : public UDP_AIBaseEvent
 {
 	GENERATED_BODY()
 
 public:
-	UDP_AIMoveEvent();
+	UDP_AIPatrolEvent();
 
 	virtual void OnBegin(bool bFirstTime) override;
 	virtual void OnUpdate() override;

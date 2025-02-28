@@ -80,6 +80,7 @@ void ADP_PlayerController::BindInputActions()
 {
 	EnhancedInputComponentRef->BindAction(Move, ETriggerEvent::Triggered, this, &ADP_PlayerController::HandleMove);
 	EnhancedInputComponentRef->BindAction(Look, ETriggerEvent::Triggered, this, &ADP_PlayerController::HandleLook);
+	EnhancedInputComponentRef->BindAction(Shoot, ETriggerEvent::Triggered, this, &ADP_PlayerController::HandleShoot);
 }
 
 void ADP_PlayerController::HandleMove(const FInputActionValue& Value)
@@ -98,4 +99,12 @@ void ADP_PlayerController::HandleLook(const FInputActionValue& Value)
 
 	const FVector2D InputAxisVector = Value.Get<FVector2D>();
 	PlayerCharacterRef->HandleLook(InputAxisVector);
+}
+
+void ADP_PlayerController::HandleShoot()
+{
+	if (!bCanReceiveInput)
+		return;
+
+	PlayerCharacterRef->HandleShoot();
 }

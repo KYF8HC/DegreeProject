@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 
+#define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1
+
 static void LogOnScreen(const UObject* WorldContext, FString Msg, const FColor Color = FColor::White,
                         const float Time = 5.0f)
 {

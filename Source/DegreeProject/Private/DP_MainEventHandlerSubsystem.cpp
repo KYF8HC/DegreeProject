@@ -17,12 +17,17 @@ UDP_EventHandler* UDP_MainEventHandlerSubsystem::GetMainEventHandler()
 	return MainEventHandlerRef;
 }
 
+void UDP_MainEventHandlerSubsystem::ClearMainEventHandler()
+{
+	if (MainEventHandlerRef)
+	{
+		MainEventHandlerRef->GetOwner()->Destroy();
+		MainEventHandlerRef = nullptr;
+	}
+}
+
 void UDP_MainEventHandlerSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
-
-	UE_LOG(LogTemp, Log, TEXT("UDP_MainEventHandlerSubsystem::Deinitialize"));
-
-	MainEventHandlerRef->GetOwner()->Destroy();
-	MainEventHandlerRef = nullptr;
+	ClearMainEventHandler();
 }

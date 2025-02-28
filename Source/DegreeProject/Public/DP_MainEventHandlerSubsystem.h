@@ -16,7 +16,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Events")
 	UDP_EventHandler* GetMainEventHandler();
 
-	
+	void ClearMainEventHandler();
 	virtual void Deinitialize() override;
 
 private:

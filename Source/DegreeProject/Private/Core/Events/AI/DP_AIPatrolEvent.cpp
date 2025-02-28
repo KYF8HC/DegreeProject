@@ -1,19 +1,19 @@
-﻿#include "Core/Events/AI/DP_AIMoveEvent.h"
+﻿#include "Core/Events/AI/DP_AIPatrolEvent.h"
 #include "Runtime/AIModule/Classes/AIController.h"
 
-UDP_AIMoveEvent::UDP_AIMoveEvent()
+UDP_AIPatrolEvent::UDP_AIPatrolEvent()
 {
 }
 
 
-void UDP_AIMoveEvent::OnBegin(bool bFirstTime)
+void UDP_AIPatrolEvent::OnBegin(bool bFirstTime)
 {
 	bShouldMove = true;
 	if (bFirstTime && PatrolPath.Num() > 0)
 		TargetLocation = PatrolPath[0];
 }
 
-void UDP_AIMoveEvent::OnUpdate()
+void UDP_AIPatrolEvent::OnUpdate()
 {
 	if (ControllerRef && bShouldMove)
 		ControllerRef->MoveToLocation(TargetLocation);
@@ -24,12 +24,12 @@ void UDP_AIMoveEvent::OnUpdate()
 	}
 }
 
-void UDP_AIMoveEvent::OnEnd()
+void UDP_AIPatrolEvent::OnEnd()
 {
 	bShouldMove = false;
 }
 
-bool UDP_AIMoveEvent::IsDone()
+bool UDP_AIPatrolEvent::IsDone()
 {
 	return false;
 }

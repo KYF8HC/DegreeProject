@@ -1,13 +1,12 @@
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
+#include "Characters/DP_PlayerCharacter.h"
+#include "Interaction/CombatInterface.h"
 
 UDP_AttributeSet::UDP_AttributeSet()
 {
-	InitHealth(50.0f);
-	InitMaxHealth(100.0f);
-	InitAbilityResource(50.0f);
-	InitMaxAbilityResource(100.0f);
+	
 }
 
 void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -25,7 +24,7 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMod
 	Super::PostGameplayEffectExecute(Data);
 
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{
+	{		
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetAbilityResourceAttribute())

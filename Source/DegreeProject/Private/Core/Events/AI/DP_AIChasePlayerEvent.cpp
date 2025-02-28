@@ -1,17 +1,17 @@
-﻿#include "Core/Events/AI/DP_ChasePlayerEvent.h"
+﻿#include "Core/Events/AI/DP_AIChasePlayerEvent.h"
 #include "AIController.h"
 #include "Core/Events/AI/DP_AIAttackEvent.h"
 
-UDP_ChasePlayerEvent::UDP_ChasePlayerEvent()
+UDP_AIChasePlayerEvent::UDP_AIChasePlayerEvent()
 {
 }
 
-void UDP_ChasePlayerEvent::OnBegin(bool bFirstTime)
+void UDP_AIChasePlayerEvent::OnBegin(bool bFirstTime)
 {
 	bShouldChase = true;
 }
 
-void UDP_ChasePlayerEvent::OnUpdate()
+void UDP_AIChasePlayerEvent::OnUpdate()
 {	
 	if (TargetActorRef && bShouldChase)
 	{
@@ -19,12 +19,12 @@ void UDP_ChasePlayerEvent::OnUpdate()
 	}
 }
 
-void UDP_ChasePlayerEvent::OnEnd()
+void UDP_AIChasePlayerEvent::OnEnd()
 {
 	TargetActorRef = nullptr;
 }
 
-bool UDP_ChasePlayerEvent::IsDone()
+bool UDP_AIChasePlayerEvent::IsDone()
 {
 	//Doesn't work atm, eyesight is always nullptr 
 	bool bLineOfSight = !ControllerRef->LineOfSightTo(TargetActorRef);

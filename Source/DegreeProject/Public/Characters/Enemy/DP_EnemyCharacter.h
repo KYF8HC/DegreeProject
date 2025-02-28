@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Characters/DP_BaseCharacter.h"
-#include "Data/DP_CharacterClassInfo.h"
+#include "GUI/WidgetController/DP_OverlayWidgetController.h"
+
 #include "DP_EnemyCharacter.generated.h"
 
 enum class ECharacterClass : uint8;
 class UWidgetComponent;
-class UDP_AIMoveEvent;
+class UDP_AIPatrolEvent;
 class UDP_AIBaseEvent;
 class IDP_Event;
 class UDP_EventHandler;
@@ -23,6 +24,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDefaultEvent();
 
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FOnAttributeChange OnHealthChangeDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Events")
+	FOnAttributeChange OnMaxHealthChangeDelegate;
+	
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Events")
@@ -33,18 +40,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
 	TSubclassOf<UDP_AIBaseEvent> DefaultEventClass{};
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
-	int32 Level{1};
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
-	ECharacterClass CharacterClass{ECharacterClass::Warrior};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UWidgetComponent> HealthBarWidgetComponent{};
+	TObjectPtr<UWidgetComponent> HealthBarWidgetComponentRef{};
 	
 	UPROPERTY(BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UDP_AIMoveEvent> MoveEventRef{};
+	TObjectPtr<UDP_AIPatrolEvent> MoveEventRef{};
+
 	
 	virtual void BeginPlay() override;
 };

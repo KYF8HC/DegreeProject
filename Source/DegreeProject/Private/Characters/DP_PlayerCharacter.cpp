@@ -1,7 +1,10 @@
 ﻿#include "Characters/DP_PlayerCharacter.h"
+
+#include "DP_MainEventHandlerSubsystem.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
+#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "GUI/HUD/DP_PlayerHUD.h"
 #include "Player/DP_PlayerController.h"
@@ -17,6 +20,9 @@ ADP_PlayerCharacter::ADP_PlayerCharacter()
 
 	CameraComponentRef = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponentRef->SetupAttachment(SpringArmComponentRef);
+
+	WeaponSocketComponentRef = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponSocketComponent"));
+	WeaponSocketComponentRef->SetupAttachment(GetMesh());
 }
 
 void ADP_PlayerCharacter::PossessedBy(AController* NewController)
@@ -57,10 +63,33 @@ void ADP_PlayerCharacter::HandleLook(const FVector2D& InputAxisVector)
 	AddControllerPitchInput(InputAxisVector.Y);
 }
 
+void ADP_PlayerCharacter::HandleShoot()
+{
+	//TODO: TERRIBLE WAY!!!!
+	TArray<FGameplayAbilitySpecHandle> Abilities;
+	AbilitySystemComponentRef->GetAllAbilities(Abilities);
+
+	for (FGameplayAbilitySpecHandle Ability : Abilities)
+	{
+		AbilitySystemComponentRef->TryActivateAbility(Ability, true);
+	}
+}
+
 
 void ADP_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ADP_PlayerCharacter::Death()
+{
+	//Reload level
+	if (PlayerControllerRef)
+	{
+		PlayerControllerRef->RestartLevel();
+	}
+
+	GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->ClearMainEventHandler();
 }
 
 void ADP_PlayerCharacter::InitOverlay()
