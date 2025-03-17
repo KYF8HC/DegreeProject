@@ -13,6 +13,9 @@ ADP_EffectActor::ADP_EffectActor()
 
 bool ADP_EffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectData GameplayEffect)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies)
+		return false;
+	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (!IsValid(TargetASC))
 		return false;

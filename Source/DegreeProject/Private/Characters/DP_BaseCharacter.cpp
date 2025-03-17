@@ -10,8 +10,6 @@ ADP_BaseCharacter::ADP_BaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);

@@ -1,6 +1,8 @@
 ﻿#include "Characters/Enemy/DP_EnemyCharacter.h"
+#include "AI/DP_AIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Core/Events/DP_EventHandler.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
@@ -15,20 +17,25 @@ ADP_EnemyCharacter::ADP_EnemyCharacter()
 
 	AttributeSetRef = CreateDefaultSubobject<UDP_AttributeSet>(TEXT("AttributeSet"));
 
-	EnemyEventHandlerRef = CreateDefaultSubobject<UDP_EventHandler>(TEXT("EnemyEventHandler"));
-	EnemyEventHandlerRef->SetIsReplicated(true);
-
 	HealthBarWidgetComponentRef = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBarWidgetComponentRef->SetupAttachment(GetRootComponent());
 }
 
-//void ADP_EnemyCharacter::StartDefaultEvent()
-//{
-//	MoveEventRef = NewObject<UDP_AIMoveEvent>(this, DefaultEventClass);
-//	MoveEventRef->SetController(Cast<AAIController>(GetController()));
-//	MoveEventRef->SetDependencies(PatrolPath);
-//	EnemyEventHandlerRef->PushEvent(MoveEventRef);
-//}
+void ADP_EnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority())
+		return;
+
+	AIControllerRef = Cast<ADP_AIController>(NewController);
+
+	const auto BlackBoard = AIControllerRef->GetBlackboardComponent();
+	BlackBoard->InitializeBlackboard(*BehaviorTreeRef->BlackboardAsset);
+	AIControllerRef->RunBehaviorTree(BehaviorTreeRef);
+	BlackBoard->SetValueAsBool("IsRanged", CharacterClass != ECharacterClass::Warrior);
+
+}
 
 void ADP_EnemyCharacter::BeginPlay()
 {

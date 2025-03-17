@@ -6,12 +6,10 @@
 
 #include "DP_EnemyCharacter.generated.h"
 
+class ADP_AIController;
+class UBehaviorTree;
 enum class ECharacterClass : uint8;
 class UWidgetComponent;
-class UDP_AIPatrolEvent;
-class UDP_AIBaseEvent;
-class IDP_Event;
-class UDP_EventHandler;
 
 UCLASS()
 class DEGREEPROJECT_API ADP_EnemyCharacter : public ADP_BaseCharacter
@@ -21,32 +19,26 @@ class DEGREEPROJECT_API ADP_EnemyCharacter : public ADP_BaseCharacter
 public:
 	ADP_EnemyCharacter();
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartDefaultEvent();
-
 	UPROPERTY(BlueprintAssignable, Category="Events")
 	FOnAttributeChange OnHealthChangeDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category="Events")
 	FOnAttributeChange OnMaxHealthChangeDelegate;
-	
-protected:
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Events")
-	TObjectPtr<UDP_EventHandler> EnemyEventHandlerRef{};
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
-	TArray<FVector> PatrolPath{};
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Events")
-	TSubclassOf<UDP_AIBaseEvent> DefaultEventClass{};
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDefaultEvent();
+	
+	virtual void PossessedBy(AController* NewController) override;
+protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBarWidgetComponentRef{};
-	
-	UPROPERTY(BlueprintReadOnly, Category="AI", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UDP_AIPatrolEvent> MoveEventRef{};
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTreeRef{};
+
+	UPROPERTY()
+	TObjectPtr<ADP_AIController> AIControllerRef{};
 	
 	virtual void BeginPlay() override;
 };

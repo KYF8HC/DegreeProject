@@ -90,6 +90,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles{};
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties")
+	bool bDestroyOnEffectApplication{false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties")
+	bool bApplyEffectToEnemies{false};
+	
 	UFUNCTION(BlueprintCallable)
 	bool ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectData GameplayEffect);
 
@@ -97,7 +103,6 @@ protected:
 
 	UFUNCTION()
 	void OnAnyEffectRemoved(const FActiveGameplayEffect& ActiveGameplayEffect);
-	
 	
 	UFUNCTION(BlueprintCallable)
 	void OnOverlap(AActor* TargetActor);
