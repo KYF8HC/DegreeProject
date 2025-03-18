@@ -15,7 +15,6 @@
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 
-
 UCLASS()
 class DEGREEPROJECT_API UDP_AttributeSet : public UAttributeSet
 {
@@ -23,6 +22,8 @@ class DEGREEPROJECT_API UDP_AttributeSet : public UAttributeSet
 
 public:
 	UDP_AttributeSet();
+
+#pragma region Vital Attributes
 
 	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
@@ -39,21 +40,104 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_MaxAbilityResource)
 	FGameplayAttributeData MaxAbilityResource;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxAbilityResource)
+#pragma endregion 
+
+#pragma region Primary Attributes
+
+	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_Stamina)
+	FGameplayAttributeData Stamina;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Stamina)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_Armor)
+	FGameplayAttributeData Armor;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Armor)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_MagicResist)
+	FGameplayAttributeData MagicResist;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MagicResist)
+
+#pragma endregion
 	
+#pragma region Special Attributes
+	UPROPERTY(BlueprintReadOnly, Category = "Special Attributes", ReplicatedUsing = OnRep_Strength)
+	FGameplayAttributeData Strength;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Strength)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Special Attributes", ReplicatedUsing = OnRep_Agility)
+	FGameplayAttributeData Agility;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Agility)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Special Attributes", ReplicatedUsing = OnRep_Intellect)
+	FGameplayAttributeData Intellect;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Intellect)
+#pragma endregion
+
+#pragma region Secondary Attributes
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_AbilityHaste)
+	FGameplayAttributeData AbilityHaste;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, AbilityHaste)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_Mastery)
+	FGameplayAttributeData Mastery;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Mastery)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_CriticalStrike)
+	FGameplayAttributeData CriticalStrike;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, CriticalStrike)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_DodgeChance)
+	FGameplayAttributeData DodgeChance;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, DodgeChance)
+#pragma endregion
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, IncomingDamage)
+
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
-	
+
+#pragma region OnRep Functions
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth);
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
-	
+
 	UFUNCTION()
 	void OnRep_AbilityResource(const FGameplayAttributeData& OldAbilityResource);
-	
+
 	UFUNCTION()
 	void OnRep_MaxAbilityResource(const FGameplayAttributeData& OldMaxAbilityResource);
+
+	UFUNCTION()
+	void OnRep_Stamina(const FGameplayAttributeData& OldStamina);
+	
+	UFUNCTION()
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor);
+	
+	UFUNCTION()
+	void OnRep_MagicResist(const FGameplayAttributeData& OldMagicResist);
+	
+	UFUNCTION()
+	void OnRep_Strength(const FGameplayAttributeData& OldStrength);
+	
+	UFUNCTION()
+	void OnRep_Agility(const FGameplayAttributeData& OldAgility);
+	
+	UFUNCTION()
+	void OnRep_Intellect(const FGameplayAttributeData& OldIntellect);
+	
+	UFUNCTION()
+	void OnRep_AbilityHaste(const FGameplayAttributeData& OldAbilityHaste);
+	
+	UFUNCTION()
+	void OnRep_Mastery(const FGameplayAttributeData& OldMastery);
+	
+	UFUNCTION()
+	void OnRep_CriticalStrike(const FGameplayAttributeData& OldCriticalStrike);
+	
+	UFUNCTION()
+	void OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance);
+#pragma endregion
 };
-
-

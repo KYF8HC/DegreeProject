@@ -1,6 +1,7 @@
 ﻿#include "GameplayAbilities/Abilities/DP_ProjectileAbility.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "FDP_GameplayTags.h"
 #include "Actors/DP_Projectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -35,6 +36,9 @@ void UDP_ProjectileAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+		FDP_GameplayTags GameplayTags = FDP_GameplayTags::Get();
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage_Physical, Damage.GetValueAtLevel(GetAbilityLevel()));
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		
 		Projectile->FinishSpawning(SpawnTransform);

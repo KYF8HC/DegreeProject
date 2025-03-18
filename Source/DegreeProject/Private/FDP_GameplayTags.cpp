@@ -8,14 +8,10 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	/*
 	 * Primary Attributes
 	 */
-	GameplayTags.Attributes_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Strength"),
-		FString("")
-		);
-
+	
 	GameplayTags.Attributes_Primary_Stamina = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.Stamina"),
-		FString("")
+		FString("Increases Health")
 		);
 
 	GameplayTags.Attributes_Primary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -23,14 +19,23 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 		FString("Increases Armor")
 		);
 
-	GameplayTags.Attributes_Primary_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Agility"),
+	/*
+	 * Class Specific Attributes
+	 */
+	
+	GameplayTags.Attributes_Special_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Special.Strength"),
 		FString("")
 		);
 
-	GameplayTags.Attributes_Primary_Intellect = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Intellect"),
-		FString("")
+	GameplayTags.Attributes_Special_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Special.Agility"),
+		FString("Increases Dodge Chance, Reload Speed, and Movement Speed")
+		);
+
+	GameplayTags.Attributes_Special_Intellect = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Special.Intellect"),
+		FString("Increases Magic Damage")
 		);
 	
 
@@ -38,59 +43,26 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	 * Secondary Attributes
 	 */
 	
-	GameplayTags.Attributes_Secondary_Haste = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.Haste"),
-		FString("")
+	GameplayTags.Attributes_Secondary_AbilityHaste = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.AbilityHaste"),
+		FString("Decreases the cooldown of your classes special ability")
 		);
 
 	GameplayTags.Attributes_Secondary_Mastery = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.Mastery"),
-		FString("")
+		FString("Increases the effectiveness of your class ability")
 		);
 
 	GameplayTags.Attributes_Secondary_CriticalStrike = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.CriticalStrike"),
-		FString("")
+		FString("Increases Critical Strike Chance")
 		);
 
-	GameplayTags.Attributes_Secondary_Versatility = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.Versatility"),
-		FString("")
+	GameplayTags.Attributes_Secondary_DodgeChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.DodgeChance"),
+		FString("Increases Dodge Chance")
 		);
-
-	/*
-	 * Input Tags
-	 */
 	
-	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.LMB"),
-		FString("Input Tag for Left Mouse Button")
-		);
-
-	GameplayTags.InputTag_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.RMB"),
-		FString("Input Tag for Right Mouse Button")
-		);
-
-	GameplayTags.InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.1"),
-		FString("Input Tag for 1 key")
-		);
-
-	GameplayTags.InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.2"),
-		FString("Input Tag for 2 key")
-		);
-
-	GameplayTags.InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.3"),
-		FString("Input Tag for 3 key")
-		);
-
-	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.4"),
-		FString("Input Tag for 4 key")
-		);
 
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
@@ -101,30 +73,21 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	 * Damage Types
 	 */
 
-	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Fire"),
+	GameplayTags.Damage_Magic_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Magic.Fire"),
 		FString("Fire Damage Type")
 		);
-	GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Lightning"),
+	GameplayTags.Damage_Magic_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Magic.Lightning"),
 		FString("Lightning Damage Type")
 		);
-	GameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Arcane"),
-		FString("Arcane Damage Type")
+	GameplayTags.Damage_Magic_Frost = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Magic.Frost"),
+		FString("Frost Damage Type")
 		);
 	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage.Physical"),
 		FString("Physical Damage Type")
-		);
-
-	/*
-	 * Effects
-	 */
-
-	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Effects.HitReact"),
-		FString("Tag granted when Hit Reacting")
 		);
 
 	/*

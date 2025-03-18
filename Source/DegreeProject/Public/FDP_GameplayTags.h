@@ -9,34 +9,32 @@ public:
 	static const FDP_GameplayTags& Get() { return GameplayTags;}
 	static void InitializeNativeGameplayTags();
 
+	FGameplayTag Attributes_Vital_Health;
+	FGameplayTag Attributes_Vital_MaxHealth;
+	FGameplayTag Attributes_Vital_AbilityResource;
+	FGameplayTag Attributes_Vital_MaxAbilityResource;
+	
 	FGameplayTag Attributes_Primary_Stamina;
 	FGameplayTag Attributes_Primary_Armor;
-	FGameplayTag Attributes_Primary_Strength;
-	FGameplayTag Attributes_Primary_Agility;
-	FGameplayTag Attributes_Primary_Intellect;
+	FGameplayTag Attributes_Primary_MagicResist;
 	
-	FGameplayTag Attributes_Secondary_Haste;
+	FGameplayTag Attributes_Special_Strength;
+	FGameplayTag Attributes_Special_Agility;
+	FGameplayTag Attributes_Special_Intellect;
+	
+	FGameplayTag Attributes_Secondary_AbilityHaste;
 	FGameplayTag Attributes_Secondary_Mastery;
 	FGameplayTag Attributes_Secondary_CriticalStrike;
-	FGameplayTag Attributes_Secondary_Versatility;
-
-	FGameplayTag InputTag_LMB;
-	FGameplayTag InputTag_RMB;
-	FGameplayTag InputTag_1;
-	FGameplayTag InputTag_2;
-	FGameplayTag InputTag_3;
-	FGameplayTag InputTag_4;
+	FGameplayTag Attributes_Secondary_DodgeChance;
 
 	FGameplayTag Damage;
-	FGameplayTag Damage_Fire;
-	FGameplayTag Damage_Lightning;
-	FGameplayTag Damage_Arcane;
+	FGameplayTag Damage_Magic_Fire;
+	FGameplayTag Damage_Magic_Frost;
+	FGameplayTag Damage_Magic_Lightning;
 	FGameplayTag Damage_Physical;
 
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Cooldown_Attack;
-
-	FGameplayTag Effects_HitReact;
 	
 private:
 	static FDP_GameplayTags GameplayTags;
