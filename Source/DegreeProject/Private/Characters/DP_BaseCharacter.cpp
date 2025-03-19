@@ -22,7 +22,7 @@ UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
 
 void ADP_BaseCharacter::Death()
 {
-	Destroy();
+	Disolve();
 }
 
 void ADP_BaseCharacter::BeginPlay()
@@ -30,18 +30,14 @@ void ADP_BaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	UDP_AbilitySystemLibrary::GiveStartupAbilities(this, CharacterClass, AbilitySystemComponentRef);
 	UDP_AbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponentRef);
+}
 
-	UDP_AttributeSet* AS = Cast<UDP_AttributeSet>(AttributeSetRef);
-	if (AS)
+void ADP_BaseCharacter::Disolve()
+{
+	if (IsValid(DissolveMaterialInstanceRef))
 	{
-		AbilitySystemComponentRef->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).
-		                           AddLambda(
-			                           [this](const FOnAttributeChangeData& Data)
-			                           {
-				                           if (Data.NewValue <= 0.0f)
-				                           {
-					                           Death();
-				                           }
-			                           });
+		UMaterialInstance* DynamicMaterialIns = UMaterialInstanceDynamic::Create(DissolveMaterialInstanceRef, this);
+		GetMesh()->SetMaterial(0, DynamicMaterialIns);
+		StartDisolveTimeline(DynamicMaterialIns);
 	}
 }

@@ -14,6 +14,39 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+
+	FEffectProperties() {}
+
+	FGameplayEffectContextHandle EffectContextHandle{};
+
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC{};
+
+	UPROPERTY()
+	AActor* SourceAvatarActor{};
+
+	UPROPERTY()
+	AController* SourceController{};
+
+	UPROPERTY()
+	ACharacter* SourceCharacter{};
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC{};
+
+	UPROPERTY()
+	AActor* TargetAvatarActor{};
+
+	UPROPERTY()
+	AController* TargetController{};
+
+	UPROPERTY()
+	ACharacter* TargetCharacter{};
+};
 
 UCLASS()
 class DEGREEPROJECT_API UDP_AttributeSet : public UAttributeSet
@@ -140,4 +173,9 @@ public:
 	UFUNCTION()
 	void OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance);
 #pragma endregion
+
+private:
+	
+	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
+
 };

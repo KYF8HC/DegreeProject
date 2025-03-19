@@ -43,8 +43,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	ECharacterClass CharacterClass{ECharacterClass::Warrior};
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visual Efefcts")
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstanceRef{};
+	
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	//FName WeaponSocketName{TEXT("WeaponSocket")};
 
 	virtual void BeginPlay() override;
+
+	void Disolve();
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Visaul Effects")
+	void StartDisolveTimeline(UMaterialInstance* DynamicMaterialInstance);
 };
