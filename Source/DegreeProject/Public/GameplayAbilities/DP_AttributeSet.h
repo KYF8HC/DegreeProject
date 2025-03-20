@@ -62,21 +62,21 @@ public:
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Health)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_MaxHealth)
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxHealth)
-
 	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_AbilityResource)
 	FGameplayAttributeData AbilityResource;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, AbilityResource)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_MaxAbilityResource)
-	FGameplayAttributeData MaxAbilityResource;
-	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxAbilityResource)
 #pragma endregion 
 
 #pragma region Primary Attributes
+	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_MaxHealth)
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxHealth)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_MaxAbilityResource)
+	FGameplayAttributeData MaxAbilityResource;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxAbilityResource)
+	
 	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_Stamina)
 	FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Stamina)
@@ -114,13 +114,20 @@ public:
 	FGameplayAttributeData Mastery;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, Mastery)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_CriticalStrike)
-	FGameplayAttributeData CriticalStrike;
-	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, CriticalStrike)
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_CriticalStrikeChance)
+	FGameplayAttributeData CriticalStrikeChance;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, CriticalStrikeChance)
+
+	UPROPERTY(BlueprintReadOnly, Category= "Secondary Attributes", ReplicatedUsing = OnRep_CriticalStrikeDamage)
+	FGameplayAttributeData CriticalStrikeDamage;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, CriticalStrikeDamage)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_DodgeChance)
 	FGameplayAttributeData DodgeChance;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, DodgeChance)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_ArmorPenetration)
+	FGameplayAttributeData ArmorPenetration;
 #pragma endregion
 
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
@@ -168,10 +175,16 @@ public:
 	void OnRep_Mastery(const FGameplayAttributeData& OldMastery);
 	
 	UFUNCTION()
-	void OnRep_CriticalStrike(const FGameplayAttributeData& OldCriticalStrike);
+	void OnRep_CriticalStrikeChance(const FGameplayAttributeData& OldCriticalStrikeChance);
+
+	UFUNCTION()
+	void OnRep_CriticalStrikeDamage(const FGameplayAttributeData& OldCriticalStrikeDamage);
 	
 	UFUNCTION()
 	void OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance);
+
+	UFUNCTION()
+	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration);
 #pragma endregion
 
 private:

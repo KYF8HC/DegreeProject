@@ -23,12 +23,12 @@ void UDP_AbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldC
 		ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttributesSpecHandle.Data.Get());
 	}
 
-	if (CharacterClassInfo->SecondaryAttributes)
+	if (ClassDefaultInfo.SecondaryAttributes)
 	{
 		FGameplayEffectContextHandle SecondaryAttributesContextHandle = ASC->MakeEffectContext();
 		SecondaryAttributesContextHandle.AddSourceObject(AvatarActor);
 		const FGameplayEffectSpecHandle SecondaryAttributesSpecHandle = ASC->MakeOutgoingSpec(
-			CharacterClassInfo->SecondaryAttributes, Level, SecondaryAttributesContextHandle);
+			ClassDefaultInfo.SecondaryAttributes, Level, SecondaryAttributesContextHandle);
 		ASC->ApplyGameplayEffectSpecToSelf(*SecondaryAttributesSpecHandle.Data.Get());
 	}
 	

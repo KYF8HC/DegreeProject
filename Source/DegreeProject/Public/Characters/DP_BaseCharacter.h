@@ -23,7 +23,7 @@ public:
 	//Getters and Setters
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSetRef; }
-	virtual int32 GetPlayerLevel() override { return 1; }
+	virtual int32 GetPlayerLevel() override { return Level; }
 	virtual FVector GetCombatSocketLocation() override { return  WeaponSocketComponentRef->GetComponentLocation(); }
 	virtual void Death() override;
 protected:

@@ -22,7 +22,8 @@ UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
 
 void ADP_BaseCharacter::Death()
 {
-	Disolve();
+	Destroy();
+	//Disolve();
 }
 
 void ADP_BaseCharacter::BeginPlay()

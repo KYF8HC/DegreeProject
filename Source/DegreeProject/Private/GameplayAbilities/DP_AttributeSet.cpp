@@ -19,6 +19,17 @@ void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, AbilityResource, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, MaxAbilityResource, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Stamina, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Armor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, MagicResist, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Strength, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Agility, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Intellect, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, AbilityHaste, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, Mastery, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, CriticalStrikeChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, DodgeChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
 }
 
 void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -152,13 +163,23 @@ void UDP_AttributeSet::OnRep_Mastery(const FGameplayAttributeData& OldMastery)
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, Mastery, OldMastery);
 }
 
-void UDP_AttributeSet::OnRep_CriticalStrike(const FGameplayAttributeData& OldCriticalStrike)
+void UDP_AttributeSet::OnRep_CriticalStrikeChance(const FGameplayAttributeData& OldCriticalStrikeChance)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, CriticalStrike, OldCriticalStrike);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, CriticalStrikeChance, OldCriticalStrikeChance);
+}
+
+void UDP_AttributeSet::OnRep_CriticalStrikeDamage(const FGameplayAttributeData& OldCriticalStrikeDamage)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, CriticalStrikeDamage, OldCriticalStrikeDamage);
 }
 
 void UDP_AttributeSet::OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeChance)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, DodgeChance, OldDodgeChance);
+}
+
+void UDP_AttributeSet::OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, ArmorPenetration, OldArmorPenetration);
 }
 #pragma endregion
