@@ -189,6 +189,7 @@ public:
 
 private:
 	
+	void ShowFloatingText(FEffectProperties Props, float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const;
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 
 };

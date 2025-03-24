@@ -1,5 +1,6 @@
 ﻿#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "DP_AbilityTypes.h"
 #include "GameplayAbilitySpec.h"
 #include "Core/DP_GameMode.h"
 #include "Interaction/CombatInterface.h"
@@ -69,4 +70,36 @@ UDP_CharacterClassInfo* UDP_AbilitySystemLibrary::GetCharacterClassInfo(const UO
 	ADP_GameMode* AuraGameMode = Cast<ADP_GameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (AuraGameMode == nullptr) return nullptr;
 	return AuraGameMode->CharacterClassInfo;
+}
+
+bool UDP_AbilitySystemLibrary::IsDodgedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FDP_GameplayEffectContext* DP_EffectContext = static_cast<const FDP_GameplayEffectContext*>(EffectContextHandle.Get()))
+		return DP_EffectContext->IsDodgedHit();
+	return false;
+}
+
+bool UDP_AbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FDP_GameplayEffectContext* DP_EffectContext = static_cast<const FDP_GameplayEffectContext*>(EffectContextHandle.Get()))
+		return DP_EffectContext->IsCriticalHit();
+	return false;
+}
+
+void UDP_AbilitySystemLibrary::SetIsDodgedHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsDodgedHit)
+{
+	if (FDP_GameplayEffectContext* DP_EffectContext = static_cast<FDP_GameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		DP_EffectContext->SetIsDodgedHit(bInIsDodgedHit);
+	}
+
+}
+
+void UDP_AbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
+	bool bInIsCriticalHit)
+{
+	if (FDP_GameplayEffectContext* DP_EffectContext = static_cast<FDP_GameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		DP_EffectContext->SetIsCriticalHit(bInIsCriticalHit);
+	}
 }

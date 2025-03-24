@@ -4,11 +4,13 @@
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
+#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/DP_PlayerController.h"
 
 UDP_AttributeSet::UDP_AttributeSet()
 {
-	
 }
 
 void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -32,15 +34,28 @@ void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
 }
 
+void UDP_AttributeSet::ShowFloatingText(FEffectProperties Props, const float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		ADP_PlayerController* PC = Cast<ADP_PlayerController>(
+			UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
+		if (PC)
+		{
+			PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bInIsDodgedHit, bInIsCriticalHit);
+		}
+	}
+}
+
 void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-	
+
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
-	
+
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{		
+	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetAbilityResourceAttribute())
@@ -65,17 +80,22 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 				}
 			}
 		}
+		
+		const bool bIsDodgedHit = UDP_AbilitySystemLibrary::IsDodgedHit(Props.EffectContextHandle);    
+		const bool bIsCriticalHit = UDP_AbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+		ShowFloatingText(Props, LocalIncomingDamage, bIsDodgedHit, bIsCriticalHit);                
 	}
 }
 
 void UDP_AttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
 	// Source = causer of the effect, Target = target of the effect (owner of this AS)
-	
+
 	Props.EffectContextHandle = Data.EffectSpec.GetContext();
 	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
 
-	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->
+		AvatarActor.IsValid())
 	{
 		Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
 		Props.SourceController = Props.SourceASC->AbilityActorInfo->PlayerController.Get();

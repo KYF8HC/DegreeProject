@@ -1,5 +1,6 @@
 ﻿#include "GameplayAbilities/ExecutionCalculation/DP_ExecCalc_Damage.h"
 #include "AbilitySystemComponent.h"
+#include "DP_AbilityTypes.h"
 #include "FDP_GameplayTags.h"
 #include "Data/DP_CharacterClassInfo.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
@@ -43,8 +44,13 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	                                                           DodgeChance);
 	DodgeChance = FMath::Max<float>(DodgeChance, 0.0f);
 
+	bool bDodgedHit = DodgeChance / 100.0f > FMath::FRand();
+	
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	UDP_AbilitySystemLibrary::SetIsDodgedHit(EffectContextHandle, bDodgedHit);
+	
 	//if successful dodge then target receives no damage
-	Damage = DodgeChance / 100.0f > FMath::FRand() ? 0.0f : Damage;
+	Damage = bDodgedHit ? 0.0f : Damage;
 
 
 	float TargetArmor = 0.0f;
@@ -75,10 +81,13 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 
 	float CriticalStrikeDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalStrikeDamageDef, EvaluateParams, CriticalStrikeDamage);
-
-
+	
 	const float CriticalStrike = Damage * (1 + CriticalStrikeDamage / 100.0f);
-	Damage = CriticalStrikeChance / 100.0f > FMath::FRand() ? CriticalStrike : Damage;
+	bool bIsCriticalHit = CriticalStrikeChance / 100.0f > FMath::FRand();
+
+	UDP_AbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bIsCriticalHit);
+	
+	Damage = bIsCriticalHit ? CriticalStrike : Damage;
 	
 	const FGameplayModifierEvaluatedData EvaluatedData(UDP_AttributeSet::GetIncomingDamageAttribute(),
 	                                                   EGameplayModOp::Additive, Damage);

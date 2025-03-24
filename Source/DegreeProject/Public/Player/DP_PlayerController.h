@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "DP_PlayerController.generated.h"
 
+class UDP_DamageTextComponent;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -25,6 +26,9 @@ public:
 
 	UFUNCTION(CLient, Reliable)
 	void OnBeginClient();
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bIsDodgedHit, bool bIsCriticalHit);
 
 protected:
 	virtual void OnPossess(APawn* aPawn) override;
@@ -60,8 +64,12 @@ private:
 	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> InputSubsystemRef{};
 #pragma endregion
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDP_DamageTextComponent> DamageTextComponentClass{};
+	
 	void BindInputActions();
 	void HandleMove(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
 	void HandleShoot();
+
 };
