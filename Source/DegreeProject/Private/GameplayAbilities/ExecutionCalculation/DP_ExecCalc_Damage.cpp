@@ -89,10 +89,10 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 		const FGameplayTag DamageTypeTag = Pair.Key;
 		const FGameplayTag ResistanceTypeTag = Pair.Value;
 		
-		checkf(DP_DamageStatics().TagsToCaptureDefs.Contains(ResistanceTypeTag),
+		checkf(DamageStatics().TagsToCaptureDefs.Contains(ResistanceTypeTag),
 		       TEXT("UDP_ExecCalc_Damage::Execute_Implementation: TagsToCaptureDefs does not contain Tag: [%s]"),
 		       *ResistanceTypeTag.ToString());
-		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DP_DamageStatics().TagsToCaptureDefs[ResistanceTypeTag];
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().TagsToCaptureDefs[ResistanceTypeTag];
 
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false, 0.0f);
 		
