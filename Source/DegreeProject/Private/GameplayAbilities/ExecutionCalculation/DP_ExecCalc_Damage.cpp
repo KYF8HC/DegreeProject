@@ -94,7 +94,7 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 		       *ResistanceTypeTag.ToString());
 		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DP_DamageStatics().TagsToCaptureDefs[ResistanceTypeTag];
 
-		float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key);
+		float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false, 0.0f);
 		
 		float ResistanceValue = 0.0f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParams, ResistanceValue);
