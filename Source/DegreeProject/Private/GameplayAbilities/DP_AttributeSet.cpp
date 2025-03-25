@@ -32,6 +32,9 @@ void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, CriticalStrikeChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, DodgeChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, FireResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, FrostResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, LightningResistance, COND_None, REPNOTIFY_Always);
 }
 
 void UDP_AttributeSet::ShowFloatingText(FEffectProperties Props, const float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const
@@ -201,5 +204,22 @@ void UDP_AttributeSet::OnRep_DodgeChance(const FGameplayAttributeData& OldDodgeC
 void UDP_AttributeSet::OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, ArmorPenetration, OldArmorPenetration);
+}
+
+void UDP_AttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, FireResistance, OldFireResistance);
+}
+
+void UDP_AttributeSet::OnRep_FrostResistance(const FGameplayAttributeData& OldFrostResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, FrostResistance, OldFrostResistance);
+
+}
+
+void UDP_AttributeSet::OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, LightningResistance, OldLightningResistance);
+
 }
 #pragma endregion

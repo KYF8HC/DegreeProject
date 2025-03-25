@@ -1,13 +1,14 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "DP_DamageGameplayAbility.h"
 #include "GameplayAbilities/Abilities/DP_GameplayAbility.h"
 #include "DP_ProjectileAbility.generated.h"
 
 class ADP_Projectile;
 
 UCLASS()
-class DEGREEPROJECT_API UDP_ProjectileAbility : public UDP_GameplayAbility
+class DEGREEPROJECT_API UDP_ProjectileAbility : public UDP_DamageGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -19,7 +20,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ProjectileClass", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ADP_Projectile> ProjectileClass{};
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ProjectileClass", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UGameplayEffect> DamageEffectClass{};
 };

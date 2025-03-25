@@ -19,4 +19,4 @@ void UDP_DamageGameplayAbility::CauseDamage()
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
 		*DamageSpecHandle.Data.Get(),
 		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AbilitySystemComponent->TargetActorRef));
-}
+}  

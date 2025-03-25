@@ -24,7 +24,9 @@ public:
 	
 	FGameplayTag Attributes_Secondary_AbilityHaste;
 	FGameplayTag Attributes_Secondary_Mastery;
-	FGameplayTag Attributes_Secondary_CriticalStrike;
+	FGameplayTag Attributes_Secondary_ArmorPenetration;
+	FGameplayTag Attributes_Secondary_CriticalStrikeChance;
+	FGameplayTag Attributes_Secondary_CriticalStrikeDamage;
 	FGameplayTag Attributes_Secondary_DodgeChance;
 
 	FGameplayTag Damage;
@@ -32,6 +34,12 @@ public:
 	FGameplayTag Damage_Magic_Frost;
 	FGameplayTag Damage_Magic_Lightning;
 	FGameplayTag Damage_Physical;
+
+	FGameplayTag Resistance_Magic_Fire;
+	FGameplayTag Resistance_Magic_Frost;
+	FGameplayTag Resistance_Magic_Lightning;
+
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 
 	FGameplayTag Abilities_Attack;
 	FGameplayTag Cooldown_Attack;

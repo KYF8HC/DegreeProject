@@ -10,7 +10,7 @@
 ADP_Projectile::ADP_Projectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	SetReplicates(true);
+	bReplicates = true;
 
 	SphereComponentRef = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SetRootComponent(SphereComponentRef);

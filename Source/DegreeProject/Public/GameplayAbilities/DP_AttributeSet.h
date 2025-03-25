@@ -128,6 +128,20 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_ArmorPenetration)
 	FGameplayAttributeData ArmorPenetration;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, ArmorPenetration)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_FireResistance)
+	FGameplayAttributeData FireResistance;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, FireResistance)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_FrostResistance)
+	FGameplayAttributeData FrostResistance;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, FrostResistance)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Secondary Attributes", ReplicatedUsing = OnRep_LightningResistance)
+	FGameplayAttributeData LightningResistance;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, LightningResistance)
+	
 #pragma endregion
 
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
@@ -185,6 +199,15 @@ public:
 
 	UFUNCTION()
 	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration);
+
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance);
+
+	UFUNCTION()
+	void OnRep_FrostResistance(const FGameplayAttributeData& OldFrostResistance);
+
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance);
 #pragma endregion
 
 private:

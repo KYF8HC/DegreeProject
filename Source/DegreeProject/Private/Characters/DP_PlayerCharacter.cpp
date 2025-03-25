@@ -20,9 +20,6 @@ ADP_PlayerCharacter::ADP_PlayerCharacter()
 
 	CameraComponentRef = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponentRef->SetupAttachment(SpringArmComponentRef);
-
-	WeaponSocketComponentRef = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponSocketComponent"));
-	WeaponSocketComponentRef->SetupAttachment(GetMesh());
 }
 
 void ADP_PlayerCharacter::PossessedBy(AController* NewController)
@@ -88,8 +85,6 @@ void ADP_PlayerCharacter::Death()
 	{
 		PlayerControllerRef->RestartLevel();
 	}
-
-	GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->ClearMainEventHandler();
 }
 
 void ADP_PlayerCharacter::InitOverlay()
