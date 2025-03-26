@@ -3,7 +3,7 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 
-void UDP_DamageGameplayAbility::CauseDamage()
+void UDP_DamageGameplayAbility::CauseDamage(AActor* CombatTarget)
 {
 	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.0f);
 	for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageTypes)
@@ -11,12 +11,11 @@ void UDP_DamageGameplayAbility::CauseDamage()
 		const float ScaleDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaleDamage);
 	}
-
-	//TODO: Not flexible enough, should receive a target actor as a parameter
+	
 	UDP_AbilitySystemComponent* AbilitySystemComponent = Cast<UDP_AbilitySystemComponent>(
 		GetAbilitySystemComponentFromActorInfo());
 	
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
 		*DamageSpecHandle.Data.Get(),
-		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AbilitySystemComponent->TargetActorRef));
+		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(CombatTarget));
 }  

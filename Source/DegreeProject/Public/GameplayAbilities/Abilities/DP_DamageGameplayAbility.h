@@ -12,7 +12,7 @@ class DEGREEPROJECT_API UDP_DamageGameplayAbility : public UDP_GameplayAbility
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void CauseDamage();
+	void CauseDamage(AActor* CombatTarget);
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

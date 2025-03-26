@@ -4,6 +4,7 @@
 #include "FDP_GameplayTags.h"
 #include "Data/DP_CharacterClassInfo.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
+#include "GameplayAbilities/DP_AttributeSet.h"
 #include "Interaction/CombatInterface.h"
 
 struct DP_DamageStatics
@@ -17,8 +18,15 @@ struct DP_DamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(FrostResistance)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance)
 
-	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
+	friend static DP_DamageStatics& DamageStatics();
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& GetTagsToCaptureDef()
+	{
+		if (TagsToCaptureDefs.IsEmpty())
+			InitMap();
+		return TagsToCaptureDefs;
+	}
 
+private:
 	DP_DamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, Armor, Target, false);
@@ -29,8 +37,12 @@ struct DP_DamageStatics
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, FireResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, FrostResistance, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, LightningResistance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, LightningResistance, Target, false);	
+	}
 
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
+	void InitMap()
+	{
 		const FDP_GameplayTags& Tags = FDP_GameplayTags::Get();
 		TagsToCaptureDefs.Add(Tags.Attributes_Primary_Armor, ArmorDef);
 		TagsToCaptureDefs.Add(Tags.Attributes_Secondary_DodgeChance, DodgeChanceDef);
@@ -44,7 +56,7 @@ struct DP_DamageStatics
 	}
 };
 
-static const DP_DamageStatics& DamageStatics()
+static DP_DamageStatics& DamageStatics()
 {
 	static DP_DamageStatics DStatics;
 	return DStatics;
@@ -84,22 +96,28 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 
 	//Get Damage Set by Caller Magnitude
 	float Damage = 0.0f;
-	for (auto& Pair : FDP_GameplayTags::Get().DamageTypesToResistances)
+	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FDP_GameplayTags::Get().DamageTypesToResistances)
 	{
 		const FGameplayTag DamageTypeTag = Pair.Key;
 		const FGameplayTag ResistanceTypeTag = Pair.Value;
-		
-		checkf(DamageStatics().TagsToCaptureDefs.Contains(ResistanceTypeTag),
+
+		if (DamageTypeTag == FDP_GameplayTags::Get().Damage_Physical)
+		{
+			Damage += Spec.GetSetByCallerMagnitude(Pair.Key, false, 0.0f);
+			continue;
+		}
+
+		checkf(DamageStatics().GetTagsToCaptureDef().Contains(ResistanceTypeTag),
 		       TEXT("UDP_ExecCalc_Damage::Execute_Implementation: TagsToCaptureDefs does not contain Tag: [%s]"),
 		       *ResistanceTypeTag.ToString());
-		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().TagsToCaptureDefs[ResistanceTypeTag];
-
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().GetTagsToCaptureDef()[ResistanceTypeTag];
+		
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false, 0.0f);
 		
 		float ResistanceValue = 0.0f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParams, ResistanceValue);
 		ResistanceValue = FMath::Clamp(ResistanceValue, 0.0f, 100.0f);
-
+		
 		DamageTypeValue *= (100.0f - ResistanceValue) / 100.0f;
 		Damage += DamageTypeValue;
 	}
@@ -117,7 +135,6 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 
 	//if successful dodge then target receives no damage
 	Damage = bDodgedHit ? 0.0f : Damage;
-
 
 	float TargetArmor = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluateParams, TargetArmor);

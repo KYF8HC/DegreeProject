@@ -53,7 +53,7 @@ void UDP_AbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextO
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
 	}
-	const FCharacterClassDefaultInfo DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 	for (TSubclassOf<UGameplayAbility> AbilityClass : DefaultInfo.StartupAbilities)
 	{
 		ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());

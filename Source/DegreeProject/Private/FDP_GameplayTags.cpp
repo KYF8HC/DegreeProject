@@ -104,6 +104,7 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Magic_Frost, GameplayTags.Resistance_Magic_Frost);
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Magic_Lightning,
 	                                          GameplayTags.Resistance_Magic_Lightning);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Physical);
 
 	/*
 	 * Abilities

@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
-#include "GameplayAbilities/DP_AttributeSet.h"
 #include "DP_ExecCalc_Damage.generated.h"
 
 UCLASS()

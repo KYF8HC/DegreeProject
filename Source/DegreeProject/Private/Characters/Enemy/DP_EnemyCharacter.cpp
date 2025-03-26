@@ -37,6 +37,16 @@ void ADP_EnemyCharacter::PossessedBy(AController* NewController)
 
 }
 
+void ADP_EnemyCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* ADP_EnemyCharacter::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 void ADP_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
