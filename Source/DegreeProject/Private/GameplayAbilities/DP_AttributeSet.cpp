@@ -37,13 +37,17 @@ void UDP_AttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION_NOTIFY(UDP_AttributeSet, LightningResistance, COND_None, REPNOTIFY_Always);
 }
 
-void UDP_AttributeSet::ShowFloatingText(FEffectProperties Props, const float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const
+void UDP_AttributeSet::ShowFloatingText(FEffectProperties Props, const float LocalIncomingDamage, bool bInIsDodgedHit,
+                                        bool bInIsCriticalHit) const
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
-		ADP_PlayerController* PC = Cast<ADP_PlayerController>(
-			UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0));
-		if (PC)
+		if (ADP_PlayerController* PC = Cast<ADP_PlayerController>((Props.SourceCharacter->Controller)))
+		{
+			PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bInIsDodgedHit, bInIsCriticalHit);
+			return;
+		}
+		if (ADP_PlayerController* PC = Cast<ADP_PlayerController>((Props.TargetCharacter->Controller)))
 		{
 			PC->ShowDamageNumber(LocalIncomingDamage, Props.TargetCharacter, bInIsDodgedHit, bInIsCriticalHit);
 		}
@@ -84,9 +88,9 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 			}
 		}
 		
-		const bool bIsDodgedHit = UDP_AbilitySystemLibrary::IsDodgedHit(Props.EffectContextHandle);    
+		const bool bIsDodgedHit = UDP_AbilitySystemLibrary::IsDodgedHit(Props.EffectContextHandle);
 		const bool bIsCriticalHit = UDP_AbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-		ShowFloatingText(Props, LocalIncomingDamage, bIsDodgedHit, bIsCriticalHit);                
+		ShowFloatingText(Props, LocalIncomingDamage, bIsDodgedHit, bIsCriticalHit);
 	}
 }
 
@@ -214,12 +218,10 @@ void UDP_AttributeSet::OnRep_FireResistance(const FGameplayAttributeData& OldFir
 void UDP_AttributeSet::OnRep_FrostResistance(const FGameplayAttributeData& OldFrostResistance)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, FrostResistance, OldFrostResistance);
-
 }
 
 void UDP_AttributeSet::OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UDP_AttributeSet, LightningResistance, OldLightningResistance);
-
 }
 #pragma endregion

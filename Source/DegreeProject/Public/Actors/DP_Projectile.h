@@ -1,23 +1,19 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
-#include "GameFramework/Actor.h"
+#include "DP_AbilityActor.h"
 #include "DP_Projectile.generated.h"
 
 class UProjectileMovementComponent;
 class USphereComponent;
 
 UCLASS()
-class DEGREEPROJECT_API ADP_Projectile : public AActor
+class DEGREEPROJECT_API ADP_Projectile : public ADP_AbilityActor
 {
 	GENERATED_BODY()
 
 public:
 	ADP_Projectile();
-
-	UPROPERTY(BlueprintReadWrite, Category = "Damage", meta = (ExposeOnSpawn = "true"))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle{};
 	
 protected:
 	virtual void BeginPlay() override;
