@@ -17,9 +17,6 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 protected:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<USceneComponent> SceneComponentRef{};
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<URotatingMovementComponent> RotatingMovementComponentRef{};

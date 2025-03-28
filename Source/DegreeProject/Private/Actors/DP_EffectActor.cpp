@@ -19,7 +19,7 @@ bool ADP_EffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectDa
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if (!IsValid(TargetASC))
 		return false;
-
+	
 	checkf(GameplayEffect.GameplayEffectClassRef,
 	       TEXT("ADP_EffectActor::ApplyEffectToTarget: GameplayEffectClass is nullptr"));
 

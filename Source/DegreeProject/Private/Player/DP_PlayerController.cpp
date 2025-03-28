@@ -54,6 +54,7 @@ void ADP_PlayerController::SetCanReceiveInput(bool bCanReceive)
 void ADP_PlayerController::OnBegin()
 {
 	OnBeginClient();
+	PlayerCharacterRef->Begin();
 }
 
 void ADP_PlayerController::OnBeginClient_Implementation()
@@ -118,5 +119,4 @@ void ADP_PlayerController::HandleShoot()
 	if (!bCanReceiveInput)
 		return;
 
-	PlayerCharacterRef->HandleShoot();
 }

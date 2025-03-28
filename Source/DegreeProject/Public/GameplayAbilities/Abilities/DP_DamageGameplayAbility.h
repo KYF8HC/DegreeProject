@@ -16,8 +16,11 @@ public:
 	void CauseDamage(AActor* CombatTarget);
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ProjectileClass", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability Attributes", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ADP_AbilityActor> AbilityActorClass{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability Attributes")
+	float MaxAmmo{10.0f};
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
@@ -25,7 +28,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
 
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> WeaponDurationEffectClass;
 
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnOutOfAmmo();
 };

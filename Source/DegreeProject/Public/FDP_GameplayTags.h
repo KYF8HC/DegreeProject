@@ -40,10 +40,17 @@ public:
 	FGameplayTag Resistance_Magic_Lightning;
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
+	TMap<FGameplayTag, FGameplayTag> CooldownsToAbilities;
 
+	FGameplayTag Abilities_Enemy_Attack;
 	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_FlameThrower;
+	FGameplayTag Abilities_Shoot;
+
+	FGameplayTag Cooldown_Enemy_Attack;
 	FGameplayTag Cooldown_Attack;
-	
+	FGameplayTag Cooldown_FlameThrower;
+	FGameplayTag Cooldown_Shoot;
 private:
 	static FDP_GameplayTags GameplayTags;
 	

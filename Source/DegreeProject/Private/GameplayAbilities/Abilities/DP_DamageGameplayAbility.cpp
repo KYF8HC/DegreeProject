@@ -6,8 +6,6 @@
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
 
-class ICombatInterface;
-
 void UDP_DamageGameplayAbility::CauseDamage(AActor* CombatTarget)
 {
 	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.0f);
@@ -16,37 +14,42 @@ void UDP_DamageGameplayAbility::CauseDamage(AActor* CombatTarget)
 		const float ScaleDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaleDamage);
 	}
-	
+
 	UDP_AbilitySystemComponent* AbilitySystemComponent = Cast<UDP_AbilitySystemComponent>(
 		GetAbilitySystemComponentFromActorInfo());
-	
+
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(
 		*DamageSpecHandle.Data.Get(),
 		UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(CombatTarget));
 }
 
+
 void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+                                                const FGameplayAbilityActorInfo* ActorInfo,
+                                                const FGameplayAbilityActivationInfo ActivationInfo,
+                                                const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 
 	const bool bIsServer = HasAuthority(&ActivationInfo);
 	if (!bIsServer) return;
 
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 
+	//TODO: TEMPORARY
+	if (CombatInterface->IsEnemy())
+		return;
+
+
 	if (CombatInterface)
 	{
-		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-
+		
 		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetLocation(GetAvatarActorFromActorInfo()->GetActorLocation());
 		SpawnTransform.SetRotation(GetAvatarActorFromActorInfo()->GetActorForwardVector().ToOrientationQuat());
 
-		ADP_AbilityActor* RotatingWeapon = GetWorld()->SpawnActorDeferred<ADP_AbilityActor>(
+		ADP_AbilityActor* AbilityActor = GetWorld()->SpawnActorDeferred<ADP_AbilityActor>(
 			AbilityActorClass,
 			SpawnTransform,
 			GetOwningActorFromActorInfo(),
@@ -55,15 +58,15 @@ void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 		);
 
 
-		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(
+		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(
 			GetAvatarActorFromActorInfo());
 
 		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
 		EffectContextHandle.SetAbility(this);
-		EffectContextHandle.AddSourceObject(RotatingWeapon);
+		EffectContextHandle.AddSourceObject(AbilityActor);
 
 		TArray<TWeakObjectPtr<AActor>> Actors;
-		Actors.Add(RotatingWeapon);
+		Actors.Add(AbilityActor);
 		FHitResult HitResult;
 		EffectContextHandle.AddHitResult(HitResult);
 
@@ -78,8 +81,13 @@ void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 		}
 
-		RotatingWeapon->SetInstigator(GetAvatarActorFromActorInfo()->GetInstigator());
-		RotatingWeapon->DamageEffectSpecHandle = SpecHandle;
-		RotatingWeapon->FinishSpawning(SpawnTransform);
+		AbilityActor->SetInstigator(GetAvatarActorFromActorInfo()->GetInstigator());
+		AbilityActor->DamageEffectSpecHandle = SpecHandle;
+		AbilityActor->SetMaxAmmo(MaxAmmo);
+		AbilityActor->InitializeAbilityActor();
+		AbilityActor->OnOutOfAmmo.AddDynamic(this, &UDP_DamageGameplayAbility::OnOutOfAmmo);
+		
+		AbilityActor->FinishSpawning(SpawnTransform);
+		AbilityActor->AttachToActor(GetAvatarActorFromActorInfo(), FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
-}  
+}

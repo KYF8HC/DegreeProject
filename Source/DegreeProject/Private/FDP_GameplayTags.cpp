@@ -1,4 +1,6 @@
 ﻿#include "FDP_GameplayTags.h"
+
+#include "AIController.h"
 #include "GameplayTagsManager.h"
 
 FDP_GameplayTags FDP_GameplayTags::GameplayTags;
@@ -49,7 +51,7 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_ArmorPenetration = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.ArmorPenetration"),
 		FString("Ignores a percentage of the target's armor"));
-	
+
 	GameplayTags.Attributes_Secondary_CriticalStrikeChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.CriticalStrike"),
 		FString("Increases Critical Strike Chance"));
@@ -61,7 +63,7 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_DodgeChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.DodgeChance"),
 		FString("Increases Dodge Chance"));
-	
+
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
 		FString("Damage"));
@@ -110,13 +112,47 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	 * Abilities
 	 */
 
+	GameplayTags.Abilities_Enemy_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Enemy.Attack"),
+		FString("Enemy Attack Ability Tag")
+	);
+	
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
 		FString("Attack Ability Tag")
+	);
+
+	GameplayTags.Abilities_FlameThrower = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.FlameThrower"),
+		FString("Flame Thrower Ability Tag")
+	);
+
+	GameplayTags.Abilities_Shoot = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Shoot"),
+		FString("Shoot Ability Tag")
+	);
+
+	GameplayTags.Cooldown_Enemy_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Enemy.Attack"),
+		FString("Cooldown Tag for Enemy Attack Ability")
 	);
 
 	GameplayTags.Cooldown_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Attack"),
 		FString("Cooldown Tag for Attack Ability")
 	);
+
+	GameplayTags.Cooldown_FlameThrower = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.FlameThrower"),
+		FString("Cooldown Tag for Flame Thrower Ability")
+	);
+
+	GameplayTags.Cooldown_Shoot = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Shoot"),
+		FString("Cooldown Tag for Shoot Ability")
+	);
+
+	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_Attack, GameplayTags.Abilities_Attack);
+	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_FlameThrower, GameplayTags.Abilities_FlameThrower);
+	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_Shoot, GameplayTags.Abilities_Shoot);
 }

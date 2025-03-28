@@ -18,4 +18,5 @@ public:
 	virtual int32 GetPlayerLevel() = 0;
 	virtual FVector GetCombatSocketLocation() = 0;
 	virtual void Death() = 0;
+	virtual bool IsEnemy() = 0;
 };

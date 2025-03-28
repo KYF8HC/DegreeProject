@@ -1,10 +1,9 @@
 ﻿#include "Characters/DP_PlayerCharacter.h"
 
-#include "DP_MainEventHandlerSubsystem.h"
+#include "FDP_GameplayTags.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
-#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "GUI/HUD/DP_PlayerHUD.h"
 #include "Player/DP_PlayerController.h"
@@ -41,6 +40,43 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+void ADP_PlayerCharacter::HandleCooldownTagChanged(FGameplayTag GameplayTag, int Count)
+{
+	if (Count > 0)
+		return;
+
+	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FDP_GameplayTags::Get().CooldownsToAbilities)
+	{
+		const FGameplayTag InCooldownTag = Pair.Key;
+		const FGameplayTag InAbilityTag = Pair.Value;
+
+		if (GameplayTag == InCooldownTag)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Ability %s is off cooldown"), *InAbilityTag.ToString());
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(InAbilityTag);
+			AbilitySystemComponentRef->TryActivateAbilitiesByTag(TagContainer);
+		}
+	}
+}
+
+void ADP_PlayerCharacter::Begin()
+{
+	for (auto AbilityClass : Abilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, GetPlayerLevel());
+		FGameplayAbilitySpecHandle AbilitySpecHandle = AbilitySystemComponentRef->GiveAbility(AbilitySpec);
+		AbilitySystemComponentRef->TryActivateAbility(AbilitySpecHandle);
+	}
+
+	for (FGameplayTag CooldownTag : CooldownTags)
+	{
+		AbilitySystemComponentRef->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved).
+		                           AddUObject(
+			                           this, &ADP_PlayerCharacter::HandleCooldownTagChanged);
+	}
+}
+
 
 void ADP_PlayerCharacter::HandleMove(const FVector2D& InputAxisVector)
 {
@@ -59,19 +95,6 @@ void ADP_PlayerCharacter::HandleLook(const FVector2D& InputAxisVector)
 	AddControllerYawInput(InputAxisVector.X);
 	AddControllerPitchInput(InputAxisVector.Y);
 }
-
-void ADP_PlayerCharacter::HandleShoot()
-{
-	//TODO: TERRIBLE WAY!!!!
-	TArray<FGameplayAbilitySpecHandle> Abilities;
-	AbilitySystemComponentRef->GetAllAbilities(Abilities);
-
-	for (FGameplayAbilitySpecHandle Ability : Abilities)
-	{
-		AbilitySystemComponentRef->TryActivateAbility(Ability, true);
-	}
-}
-
 
 void ADP_PlayerCharacter::BeginPlay()
 {

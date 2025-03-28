@@ -26,6 +26,7 @@ public:
 	virtual int32 GetPlayerLevel() override { return Level; }
 	virtual FVector GetCombatSocketLocation() override { return  WeaponSocketComponentRef->GetComponentLocation(); }
 	virtual void Death() override;
+	virtual bool IsEnemy() override { return true; }
 protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ability System")

@@ -36,6 +36,7 @@ public:
 
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
+	virtual bool IsEnemy() override { return true; }
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

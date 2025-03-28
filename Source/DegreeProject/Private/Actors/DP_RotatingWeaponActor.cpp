@@ -9,11 +9,6 @@ ADP_RotatingWeaponActor::ADP_RotatingWeaponActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	bReplicates = true;
-	
-	SceneComponentRef = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-	SetRootComponent(SceneComponentRef);
-
 	CapsuleComponentRef = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collider"));
 	CapsuleComponentRef->SetupAttachment(RootComponent);
 	CapsuleComponentRef->SetCollisionObjectType(ECC_Projectile);
@@ -26,14 +21,22 @@ ADP_RotatingWeaponActor::ADP_RotatingWeaponActor()
 	RotatingMovementComponentRef = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotatingMovementComponent"));
 	RotatingMovementComponentRef->RotationRate = FRotator(0.0f, 0.0f, 180.0f);
 	RotatingMovementComponentRef->UpdatedComponent = RootComponent;
-	
-	
 }
 
 void ADP_RotatingWeaponActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	SetActorLocation(GetInstigator()->GetActorLocation());
+		
+	if (!bIsInitialized)
+		return;
+	
+	Ammo -= DeltaTime;
+	if (Ammo <= 0.0f)
+	{
+		Destroy();
+		OnOutOfAmmo.Broadcast();
+	}
 }
 
 void ADP_RotatingWeaponActor::OnCapsuleComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
