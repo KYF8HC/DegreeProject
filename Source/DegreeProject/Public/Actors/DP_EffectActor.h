@@ -57,13 +57,14 @@ struct FOverlappingActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Overlapping Actor")
 	AActor* OverlappingActorRef{};
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Overlapping Actor")
 	bool bIsEffectApplied{false};
 
-	FDelegateHandle OnAnyEffectRemovedHandle{};
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Overlapping Actor")
+	AActor* VisualEffectActorRef{};
 
 	bool operator==(const FOverlappingActor& Other) const
 	{
@@ -81,13 +82,10 @@ public:
 
 protected:
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Overlapping Actors")
 	TArray<FOverlappingActor> OverlappingActors{};
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Applied Effects")
-	FGameplayEffectData GameplayEffectRef{};
-
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Active Effects")
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles{};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties")
@@ -95,18 +93,20 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties")
 	bool bApplyEffectToEnemies{false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect Properties")
+	bool bApplyEffectToPlayer{false};
 	
 	UFUNCTION(BlueprintCallable)
-	bool ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectData GameplayEffect);
+	bool ApplyEffectToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InGameplayEffectSpecHandle);
 
 	void RemoveEffectFromTarget(AActor* TargetActor);
 
-	UFUNCTION()
-	void OnAnyEffectRemoved(const FActiveGameplayEffect& ActiveGameplayEffect);
+	void RemoveEveryEffect();
 	
 	UFUNCTION(BlueprintCallable)
-	void OnOverlap(AActor* TargetActor);
+	virtual bool OnOverlap(AActor* TargetActor);
 
 	UFUNCTION(BlueprintCallable)
-	void OnEndOverlap(AActor* TargetActor);
+	virtual bool OnEndOverlap(AActor* TargetActor);
 };

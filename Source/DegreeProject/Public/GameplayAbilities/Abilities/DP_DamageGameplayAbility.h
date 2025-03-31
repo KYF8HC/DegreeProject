@@ -17,7 +17,7 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ability Attributes", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ADP_AbilityActor> AbilityActorClass{};
+	TSubclassOf<AActor> AbilityActorClass{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability Attributes")
 	float MaxAmmo{10.0f};
@@ -27,9 +27,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> WeaponDurationEffectClass;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

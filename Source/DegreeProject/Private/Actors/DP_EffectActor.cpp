@@ -1,9 +1,7 @@
 ﻿#include "Actors/DP_EffectActor.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "Characters/DP_PlayerCharacter.h"
-#include "GameFramework/PlayerState.h"
-
+#include "Interaction/CombatInterface.h"
 
 ADP_EffectActor::ADP_EffectActor()
 {
@@ -11,127 +9,67 @@ ADP_EffectActor::ADP_EffectActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("RootComponent"));
 }
 
-bool ADP_EffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectData GameplayEffect)
+bool ADP_EffectActor::ApplyEffectToTarget(AActor* TargetActor,
+                                          const FGameplayEffectSpecHandle& InGameplayEffectSpecHandle)
 {
-	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies)
-		return false;
-	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	if (!IsValid(TargetASC))
-		return false;
-	
-	checkf(GameplayEffect.GameplayEffectClassRef,
-	       TEXT("ADP_EffectActor::ApplyEffectToTarget: GameplayEffectClass is nullptr"));
+	if (TargetASC == nullptr) return false;
 
-	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-	EffectContextHandle.AddSourceObject(this);
-
-	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(
-		GameplayEffect.GameplayEffectClassRef, 1, EffectContextHandle);
-
-	const FActiveGameplayEffectHandle EffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(
-		*EffectSpecHandle.Data.Get());
-
-	if (GameplayEffect.DurationType == EEffectDurationType::Infinite &&
-		GameplayEffect.RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetActor);
+	if (CombatInterface)
 	{
-		FOverlappingActor OverlappingActor;
-		OverlappingActor.OverlappingActorRef = TargetActor;
-
-		if (EffectHandle.WasSuccessfullyApplied())
-		{
-			ActiveEffectHandles.Add(EffectHandle, TargetASC);
-			OverlappingActor.bIsEffectApplied = true;
-		}
-		else
-		{
-			OverlappingActor.bIsEffectApplied = false;
-		}
-
-		OverlappingActor.OnAnyEffectRemovedHandle = TargetASC->OnAnyGameplayEffectRemovedDelegate().AddUObject(
-			this, &ADP_EffectActor::OnAnyEffectRemoved);
-		if (OverlappingActors.Contains(OverlappingActor) == false)
-			OverlappingActors.Add(OverlappingActor);
+		if (CombatInterface->IsEnemy() && !bApplyEffectToEnemies) return false;
+		if (!CombatInterface->IsEnemy() && !bApplyEffectToPlayer) return false;
 	}
+	
+	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(
+		*InGameplayEffectSpecHandle.Data.Get());
+	const bool bIsInfinite = InGameplayEffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy ==
+		EGameplayEffectDurationType::Infinite;
+	if (bIsInfinite)
+	{
+		ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
+	}
+
 	return true;
 }
 
-void ADP_EffectActor::OnOverlap(AActor* TargetActor)
+bool ADP_EffectActor::OnOverlap(AActor* TargetActor)
 {
-	if (GameplayEffectRef.ApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
-	{
-		ApplyEffectToTarget(TargetActor, GameplayEffectRef);
-	}
+	return false;
 }
 
 void ADP_EffectActor::RemoveEffectFromTarget(AActor* TargetActor)
 {
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	if (!IsValid(TargetASC))
-		return;
-
-	FOverlappingActor ActorToBeRemoved;
-	for (auto Actor : OverlappingActors)
-	{
-		if (Actor.OverlappingActorRef == TargetActor)
-		{
-			ActorToBeRemoved = Actor;
-			break;
-		}
-	}
-	TargetASC->OnAnyGameplayEffectRemovedDelegate().Remove(ActorToBeRemoved.OnAnyEffectRemovedHandle);
-	OverlappingActors.Remove(ActorToBeRemoved);
+	if (!IsValid(TargetASC)) return;
 
 	TArray<FActiveGameplayEffectHandle> HandlesToRemove;
-
-	for (auto HandlePair : ActiveEffectHandles)
+	for (TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*> HandlePair : ActiveEffectHandles)
 	{
 		if (TargetASC == HandlePair.Value)
 		{
 			TargetASC->RemoveActiveGameplayEffect(HandlePair.Key, 1);
+			HandlesToRemove.Add(HandlePair.Key);
 		}
-		HandlesToRemove.Add(HandlePair.Key);
-
-		break;
 	}
-
-	for (auto Handle : HandlesToRemove)
+	for (FActiveGameplayEffectHandle& Handle : HandlesToRemove)
 	{
-		ActiveEffectHandles.Remove(Handle);
+		ActiveEffectHandles.FindAndRemoveChecked(Handle);
 	}
 }
 
-void ADP_EffectActor::OnAnyEffectRemoved(const FActiveGameplayEffect& ActiveGameplayEffect)
+void ADP_EffectActor::RemoveEveryEffect()
 {
-	auto TargetActor = CastChecked<APlayerState>(
-		ActiveGameplayEffect.Handle.GetOwningAbilitySystemComponent()->GetOwner())->GetPawn();
-	UE_LOG(LogTemp, Log, TEXT("%s: Effect removed from %s"), *GetName(), *TargetActor->GetName());
-
-	for (auto Actor : OverlappingActors)
+	for (TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*> HandlePair : ActiveEffectHandles)
 	{
-		if (Actor.OverlappingActorRef == TargetActor &&
-			Actor.bIsEffectApplied == false)
-		{
-			Actor.bIsEffectApplied = ApplyEffectToTarget(Actor.OverlappingActorRef, GameplayEffectRef);
-			UE_LOG(LogTemp, Log, TEXT("%s: Applying effect to %s, %s"), *GetName(),
-			       *Actor.OverlappingActorRef->GetName(), Actor.bIsEffectApplied ? TEXT("Success") : TEXT("Failed"));
-		}
+		HandlePair.Value->RemoveActiveGameplayEffect(HandlePair.Key, 1);
 	}
+
+	ActiveEffectHandles.Empty();
 }
 
-void ADP_EffectActor::OnEndOverlap(AActor* TargetActor)
+bool ADP_EffectActor::OnEndOverlap(AActor* TargetActor)
 {
-	if (GameplayEffectRef.ApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
-	{
-		ApplyEffectToTarget(TargetActor, GameplayEffectRef);
-	}
-	if (GameplayEffectRef.RemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
-	{
-		UE_LOG(LogTemp, Log, TEXT("%s: Effect getting removed"), *GetName())
-
-		ADP_PlayerCharacter* PlayerCharacter = Cast<ADP_PlayerCharacter>(TargetActor);
-		if (!PlayerCharacter)
-			return;
-		RemoveEffectFromTarget(TargetActor);
-	}
+	return false;
 }

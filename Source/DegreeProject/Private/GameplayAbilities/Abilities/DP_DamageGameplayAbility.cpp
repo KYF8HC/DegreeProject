@@ -3,12 +3,14 @@
 #include "AbilitySystemComponent.h"
 #include "FDP_GameplayTags.h"
 #include "Actors/DP_AbilityActor.h"
+#include "Actors/DP_DamageEffectActor.h"
+#include "Actors/DP_EffectActor.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
 
 void UDP_DamageGameplayAbility::CauseDamage(AActor* CombatTarget)
 {
-	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1.0f);
+	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 	for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageTypes)
 	{
 		const float ScaleDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
@@ -44,12 +46,11 @@ void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 
 	if (CombatInterface)
 	{
-		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetAvatarActorFromActorInfo()->GetActorLocation());
 		SpawnTransform.SetRotation(GetAvatarActorFromActorInfo()->GetActorForwardVector().ToOrientationQuat());
 
-		ADP_AbilityActor* AbilityActor = GetWorld()->SpawnActorDeferred<ADP_AbilityActor>(
+		AActor* NewActor = GetWorld()->SpawnActorDeferred<AActor>(
 			AbilityActorClass,
 			SpawnTransform,
 			GetOwningActorFromActorInfo(),
@@ -63,10 +64,10 @@ void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 
 		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
 		EffectContextHandle.SetAbility(this);
-		EffectContextHandle.AddSourceObject(AbilityActor);
+		EffectContextHandle.AddSourceObject(NewActor);
 
 		TArray<TWeakObjectPtr<AActor>> Actors;
-		Actors.Add(AbilityActor);
+		Actors.Add(NewActor);
 		FHitResult HitResult;
 		EffectContextHandle.AddHitResult(HitResult);
 
@@ -81,13 +82,21 @@ void UDP_DamageGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
 		}
 
-		AbilityActor->SetInstigator(GetAvatarActorFromActorInfo()->GetInstigator());
-		AbilityActor->DamageEffectSpecHandle = SpecHandle;
-		AbilityActor->SetMaxAmmo(MaxAmmo);
-		AbilityActor->InitializeAbilityActor();
-		AbilityActor->OnOutOfAmmo.AddDynamic(this, &UDP_DamageGameplayAbility::OnOutOfAmmo);
+		if (ADP_AbilityActor* AbilityActor = Cast<ADP_AbilityActor>(NewActor))
+		{
+			AbilityActor->SetInstigator(GetAvatarActorFromActorInfo()->GetInstigator());
+			AbilityActor->DamageEffectSpecHandle = SpecHandle;
+			AbilityActor->SetMaxAmmo(MaxAmmo);
+			AbilityActor->InitializeAbilityActor();
+			AbilityActor->OnOutOfAmmo.AddDynamic(this, &UDP_DamageGameplayAbility::OnOutOfAmmo);
+		}
+
+		if (ADP_DamageEffectActor* DamageEffectActor = Cast<ADP_DamageEffectActor>(NewActor))
+		{
+			DamageEffectActor->DamageEffectSpecHandle = SpecHandle;
+		}
 		
-		AbilityActor->FinishSpawning(SpawnTransform);
-		AbilityActor->AttachToActor(GetAvatarActorFromActorInfo(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+		NewActor->FinishSpawning(SpawnTransform);
+		NewActor->AttachToActor(GetAvatarActorFromActorInfo(), FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 }
