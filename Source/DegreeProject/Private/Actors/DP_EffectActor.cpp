@@ -21,11 +21,12 @@ bool ADP_EffectActor::ApplyEffectToTarget(AActor* TargetActor,
 		if (CombatInterface->IsEnemy() && !bApplyEffectToEnemies) return false;
 		if (!CombatInterface->IsEnemy() && !bApplyEffectToPlayer) return false;
 	}
-	
+
 	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(
 		*InGameplayEffectSpecHandle.Data.Get());
-	const bool bIsInfinite = InGameplayEffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy ==
+	const bool bIsInfinite = InGameplayEffectSpecHandle.Data.Get()->Def->DurationPolicy ==
 		EGameplayEffectDurationType::Infinite;
+
 	if (bIsInfinite)
 	{
 		ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);

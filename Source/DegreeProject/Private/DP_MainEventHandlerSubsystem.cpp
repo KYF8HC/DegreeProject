@@ -11,7 +11,6 @@ UDP_EventHandler* UDP_MainEventHandlerSubsystem::GetMainEventHandler()
 		EventHandlerActor->AddOwnedComponent(MainEventHandlerRef);
 		MainEventHandlerRef->RegisterComponent();
 		MainEventHandlerRef->SetTickableWhenPaused(true);
-		UE_LOG(LogTemp, Log, TEXT("UDP_MainEventHandlerSubsystem::GetMainEventHandler: Created new MainEventHandler"));
 	}
 
 	return MainEventHandlerRef;

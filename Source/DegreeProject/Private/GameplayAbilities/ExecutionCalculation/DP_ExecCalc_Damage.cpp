@@ -175,7 +175,7 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	UDP_AbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bIsCriticalHit);
 
 	Damage = bIsCriticalHit ? CriticalStrike : Damage;
-
+	
 	const FGameplayModifierEvaluatedData EvaluatedData(UDP_AttributeSet::GetIncomingDamageAttribute(),
 	                                                   EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
