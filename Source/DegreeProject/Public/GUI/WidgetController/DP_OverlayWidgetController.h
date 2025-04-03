@@ -5,6 +5,7 @@
 #include "DP_OverlayWidgetController.generated.h"
 
 struct FOnAttributeChangeData;
+struct FGameplayTag;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChange, float, NewValue);
 
 UCLASS(BlueprintType, Blueprintable)
@@ -27,6 +28,9 @@ public:
 
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
+
+	UFUNCTION(BlueprintCallable)
+	void GivePlayerWeapon(FGameplayTag& WeaponTag);
 protected:
 
 	void HealthChanged(const FOnAttributeChangeData& Data);

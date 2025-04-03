@@ -56,11 +56,11 @@ void UDP_EventHandler::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 	UpdateEvents();
 
-	if (CurrentEvent.GetObject() != nullptr)
-	{
-		const FString EventMessage = FString::Printf(TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
-		LogOnScreen(this, EventMessage, FColor::Red, 0.0f);
-	}
+	//if (CurrentEvent.GetObject() != nullptr)
+	//{
+	//	const FString EventMessage = FString::Printf(TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
+	//	LogOnScreen(this, EventMessage, FColor::Red, 0.0f);
+	//}
 }
 
 void UDP_EventHandler::UpdateEvents()
