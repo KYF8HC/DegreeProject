@@ -19,7 +19,8 @@ public class DegreeProject : ModuleRules
 			"GameplayTasks",
 			"GameplayAbilities",
 			"UMG",
-			"AIModule"
+			"AIModule",
+            "AsyncMixin"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });

@@ -23,7 +23,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSetRef; }
 	
 protected:
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponentRef{};
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

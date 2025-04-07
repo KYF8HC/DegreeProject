@@ -3,8 +3,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DP_PlayerCharacter.h"
+#include "Core/DP_GameMode.h"
 #include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/Widgets/DP_DamageTextComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/DP_PlayerState.h"
 
 void ADP_PlayerController::SetupInputComponent()
@@ -51,7 +53,7 @@ void ADP_PlayerController::SetCanReceiveInput(bool bCanReceive)
 	bCanReceiveInput = bCanReceive;
 }
 
-void ADP_PlayerController::OnBegin()
+void ADP_PlayerController::OnBegin(bool bFirstTime)
 {
 	OnBeginClient();
 	PlayerCharacterRef->Begin();
@@ -68,13 +70,16 @@ void ADP_PlayerController::OnBeginClient_Implementation()
 	                       PlayerStateRef->GetAttributeSet());
 }
 
-void ADP_PlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bIsDodgedHit, bool bIsCriticalHit)
+void ADP_PlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter,
+                                                           bool bIsDodgedHit, bool bIsCriticalHit)
 {
 	if (IsValid(TargetCharacter) && DamageTextComponentClass)
 	{
-		UDP_DamageTextComponent* DamageTextCompRef = NewObject<UDP_DamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		UDP_DamageTextComponent* DamageTextCompRef = NewObject<UDP_DamageTextComponent>(
+			TargetCharacter, DamageTextComponentClass);
 		DamageTextCompRef->RegisterComponent();
-		DamageTextCompRef->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageTextCompRef->AttachToComponent(TargetCharacter->GetRootComponent(),
+		                                     FAttachmentTransformRules::KeepRelativeTransform);
 		DamageTextCompRef->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		DamageTextCompRef->SetDamageText(DamageAmount, bIsDodgedHit, bIsCriticalHit);
 	}
@@ -83,6 +88,9 @@ void ADP_PlayerController::ShowDamageNumber_Implementation(float DamageAmount, A
 void ADP_PlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
+
+	Cast<ADP_GameMode>(UGameplayStatics::GetGameMode(this))->OnBeginDelegate.AddDynamic(this, &ADP_PlayerController::OnBegin);
+
 	if (IsLocalController())
 	{
 		SetupController(aPawn);
@@ -118,5 +126,4 @@ void ADP_PlayerController::HandleShoot()
 {
 	if (!bCanReceiveInput)
 		return;
-
 }

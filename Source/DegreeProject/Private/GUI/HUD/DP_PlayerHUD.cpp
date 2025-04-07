@@ -16,21 +16,42 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilit
 	OverlayWidgetRef = Cast<UDP_UserWidgetBase>(Widget);
 
 	const FWidgetControllerParams Params(PC, PS, ASC, AS);
-	UDP_OverlayWidgetController* WidgetControllerRef = GetOverlayWidgetController(Params);
+	OverlayWidgetControllerRef = GetOverlayWidgetController(Params);
 	
-	OverlayWidgetRef->SetWidgetController(WidgetControllerRef);
-	WidgetControllerRef->BroadcastInitialValues();	
-	Widget->AddToViewport();
+	OverlayWidgetRef->SetWidgetController(OverlayWidgetControllerRef);
+	OverlayWidgetControllerRef->BroadcastInitialValues();
+
+	
+	//Widget->AddToViewport();
+
+	//TODO: JUST FOR TESTING
+	UUserWidget* UserWidget = CreateWidget<UUserWidget>(GetWorld(), UpgradeWidgetClass);
+	UpgradeWidgetRef = Cast<UDP_UserWidgetBase>(UserWidget);
+	UpgradeWidgetControllerRef = GetUpgradeWidgetController(Params);
+	UpgradeWidgetRef->SetWidgetController(UpgradeWidgetControllerRef);
+	UpgradeWidgetRef->AddToViewport();
 }
 
-UDP_OverlayWidgetController* ADP_PlayerHUD::GetOverlayWidgetController(const FWidgetControllerParams& Params)
+UDP_WidgetController* ADP_PlayerHUD::GetOverlayWidgetController(const FWidgetControllerParams& Params)
 {
 	if (OverlayWidgetControllerRef == nullptr)
 	{
-		OverlayWidgetControllerRef = NewObject<UDP_OverlayWidgetController>(this, OverlayWidgetControllerClass);
+		OverlayWidgetControllerRef = NewObject<UDP_WidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetControllerRef->SetWidgetControllerParams(Params);
 		OverlayWidgetControllerRef->BindCallbacksToDependencies();
 	}
 
 	return OverlayWidgetControllerRef;
+}
+
+UDP_WidgetController* ADP_PlayerHUD::GetUpgradeWidgetController(const FWidgetControllerParams& Params)
+{
+	if (UpgradeWidgetControllerRef == nullptr)
+	{
+		UpgradeWidgetControllerRef = NewObject<UDP_WidgetController>(this, UpgradeWidgetControllerClass);
+		UpgradeWidgetControllerRef->SetWidgetControllerParams(Params);
+		UpgradeWidgetControllerRef->BindCallbacksToDependencies();
+	}
+
+	return UpgradeWidgetControllerRef;
 }

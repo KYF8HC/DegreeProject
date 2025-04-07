@@ -27,8 +27,9 @@ void UDP_OverlayWidgetController::BindCallbacksToDependencies()
 	                         .AddUObject(this, &UDP_OverlayWidgetController::MaxAbilityResourceChanged);
 }
 
-void UDP_OverlayWidgetController::GivePlayerWeapon(FGameplayTag& WeaponTag)
+void UDP_OverlayWidgetController::InitializeWidgetController()
 {
+	Super::InitializeWidgetController();
 }
 
 void UDP_OverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data)

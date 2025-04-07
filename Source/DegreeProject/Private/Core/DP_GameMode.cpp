@@ -1,5 +1,8 @@
 ﻿#include "Core/DP_GameMode.h"
+
+#include "GameplayAbilitySpec.h"
 #include "Characters/Enemy/DP_EnemyCharacter.h"
+#include "Data/DP_WeaponInfo.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,13 +15,6 @@ ADP_GameMode::ADP_GameMode()
 
 void ADP_GameMode::OnBegin(bool bFirstTime)
 {
-	int NumberOfControllers = UGameplayStatics::GetNumPlayerControllers(GetWorld());
-	for (int i = 0; i < NumberOfControllers; i++)
-	{
-		ADP_PlayerController* PlayerController = Cast<ADP_PlayerController>(
-			UGameplayStatics::GetPlayerController(GetWorld(), i));
-		PlayerController->OnBegin();
-	}
 	OnBeginDelegate.Broadcast(bFirstTime);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ADP_GameMode::SpawnBotTimerElapsed,

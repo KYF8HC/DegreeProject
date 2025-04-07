@@ -8,6 +8,10 @@ void UDP_WidgetController::SetWidgetControllerParams(const FWidgetControllerPara
 	AttributeSetRef = Params.AttributeSet;
 }
 
+void UDP_WidgetController::InitializeWidgetController()
+{
+}
+
 void UDP_WidgetController::BroadcastInitialValues()
 {
 	

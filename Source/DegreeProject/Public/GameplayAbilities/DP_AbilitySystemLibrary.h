@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Data/DP_CharacterClassInfo.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DP_AbilitySystemLibrary.generated.h"

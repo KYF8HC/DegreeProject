@@ -22,7 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanReceiveInput(bool bCanReceive);
 
-	void OnBegin();
+	UFUNCTION()
+	void OnBegin(bool bFirstTime);
 
 	UFUNCTION(CLient, Reliable)
 	void OnBeginClient();

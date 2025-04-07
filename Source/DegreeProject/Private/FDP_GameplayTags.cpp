@@ -116,7 +116,7 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Enemy.Attack"),
 		FString("Enemy Attack Ability Tag")
 	);
-	
+
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
 		FString("Attack Ability Tag")
@@ -131,6 +131,15 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Shoot"),
 		FString("Shoot Ability Tag")
 	);
+
+	GameplayTags.Abilities_LightningRod = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.LightningRod"),
+		FString("Lightning Rod Ability Tag")
+	);
+
+	/*
+	 * Cooldowns
+	 */
 
 	GameplayTags.Cooldown_Enemy_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Enemy.Attack"),
@@ -152,7 +161,13 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 		FString("Cooldown Tag for Shoot Ability")
 	);
 
+	GameplayTags.Cooldown_LightningRod = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.LightningRod"),
+		FString("Cooldown Tag for Lightning Rod Ability")
+	);
+
+	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_Shoot, GameplayTags.Abilities_Shoot);
 	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_Attack, GameplayTags.Abilities_Attack);
 	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_FlameThrower, GameplayTags.Abilities_FlameThrower);
-	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_Shoot, GameplayTags.Abilities_Shoot);
+	GameplayTags.CooldownsToAbilities.Add(GameplayTags.Cooldown_LightningRod, GameplayTags.Abilities_LightningRod);
 }

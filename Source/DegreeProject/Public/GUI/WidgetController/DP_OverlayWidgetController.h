@@ -4,9 +4,11 @@
 #include "DP_WidgetController.h"
 #include "DP_OverlayWidgetController.generated.h"
 
-struct FOnAttributeChangeData;
-struct FGameplayTag;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChange, float, NewValue);
+
+class UDP_WeaponInfo;
+class UGameplayAbility;
+struct FOnAttributeChangeData;
 
 UCLASS(BlueprintType, Blueprintable)
 class DEGREEPROJECT_API UDP_OverlayWidgetController : public UDP_WidgetController
@@ -26,15 +28,16 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnAttributeChange OnMaxAbilityResourceChange;
 
+
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
+	virtual void InitializeWidgetController() override;
 
-	UFUNCTION(BlueprintCallable)
-	void GivePlayerWeapon(FGameplayTag& WeaponTag);
 protected:
 
 	void HealthChanged(const FOnAttributeChangeData& Data);
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void AbilityResourceChanged(const FOnAttributeChangeData& Data);
 	void MaxAbilityResourceChanged(const FOnAttributeChangeData& Data);
+
 };

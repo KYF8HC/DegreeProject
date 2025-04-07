@@ -25,7 +25,6 @@ public:
 	
 	#pragma endregion
 
-	void HandleCooldownTagChanged(FGameplayTag GameplayTag, int Count);
 	void Begin();
 	
 	void HandleMove(const FVector2D& InputAxisVector);
@@ -38,12 +37,8 @@ protected:
 	virtual void Death() override;
 private:
 
-	//TODO: TEMP!!!!!!!!!!
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "GAS", meta = (AllowPrivateAccess = "true"))
-	TArray<TSubclassOf<UGameplayAbility>> Abilities{};
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "GAS", meta = (AllowPrivateAccess = "true"))
-	FGameplayTagContainer CooldownTags{};
+	FGameplayTag StartWeaponTag{};
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArmComponentRef{};

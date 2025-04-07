@@ -1,17 +1,16 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Events/DP_Event.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "DP_GameMode.generated.h"
 
-class UEnvQueryInstanceBlueprintWrapper;
+class UGameplayAbility;
+class UDP_WeaponInfo;
 class ADP_EnemyCharacter;
 class UDP_CharacterClassInfo;
-class ADP_PlayerCharacter;
-class ADP_PlayerHUD;
-class ADP_PlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginDelegate, bool, bFirstTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateDelegate);
@@ -44,9 +43,6 @@ public:
 	virtual bool IsDone() override;
 
 private:
-	
-	UPROPERTY(BlueprintReadOnly, Category="Player Systems", meta=(AllowPrivateAccess="true"))
-	TArray<TObjectPtr<ADP_PlayerController>> PlayerControllers{};
 
 	FTimerHandle TimerHandle_SpawnBots{};
 

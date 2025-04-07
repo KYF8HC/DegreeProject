@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
+#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "GUI/HUD/DP_PlayerHUD.h"
 #include "Player/DP_PlayerController.h"
@@ -40,41 +41,9 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
-void ADP_PlayerCharacter::HandleCooldownTagChanged(FGameplayTag GameplayTag, int Count)
-{
-	if (Count > 0)
-		return;
-
-	for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FDP_GameplayTags::Get().CooldownsToAbilities)
-	{
-		const FGameplayTag InCooldownTag = Pair.Key;
-		const FGameplayTag InAbilityTag = Pair.Value;
-
-		if (GameplayTag == InCooldownTag)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Ability %s is off cooldown"), *InAbilityTag.ToString());
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(InAbilityTag);
-			AbilitySystemComponentRef->TryActivateAbilitiesByTag(TagContainer);
-		}
-	}
-}
-
 void ADP_PlayerCharacter::Begin()
 {
-	for (auto AbilityClass : Abilities)
-	{
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, GetPlayerLevel());
-		FGameplayAbilitySpecHandle AbilitySpecHandle = AbilitySystemComponentRef->GiveAbility(AbilitySpec);
-		AbilitySystemComponentRef->TryActivateAbility(AbilitySpecHandle);
-	}
-
-	for (FGameplayTag CooldownTag : CooldownTags)
-	{
-		AbilitySystemComponentRef->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved).
-		                           AddUObject(
-			                           this, &ADP_PlayerCharacter::HandleCooldownTagChanged);
-	}
+	//UDP_AbilitySystemLibrary::GiveWeaponToPlayer(this, StartWeaponTag, AbilitySystemComponentRef);
 }
 
 
@@ -112,14 +81,14 @@ void ADP_PlayerCharacter::Death()
 
 void ADP_PlayerCharacter::InitOverlay()
 {
-	if (PlayerControllerRef)
-	{
-		ADP_PlayerHUD* HUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
-		if (HUD)
-		{
-			HUD->InitOverlay(PlayerControllerRef, GetPlayerState(), AbilitySystemComponentRef, AttributeSetRef);
-		}
-	}
+	//if (PlayerControllerRef)
+	//{
+	//	ADP_PlayerHUD* HUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
+	//	if (HUD)
+	//	{
+	//		HUD->InitOverlay(PlayerControllerRef, GetPlayerState(), AbilitySystemComponentRef, AttributeSetRef);
+	//	}
+	//}
 }
 
 void ADP_PlayerCharacter::InitAbilityActorInfo()
