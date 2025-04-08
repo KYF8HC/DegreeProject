@@ -4,7 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "DP_AbilitySystemComponent.generated.h"
 
-class UDP_WeaponInfo;
+class UDP_UpgradeCardInfo;
 
 UCLASS()
 class DEGREEPROJECT_API UDP_AbilitySystemComponent : public UAbilitySystemComponent

@@ -6,7 +6,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChange, float, NewValue);
 
-class UDP_WeaponInfo;
+class UDP_UpgradeCardInfo;
 class UGameplayAbility;
 struct FOnAttributeChangeData;
 

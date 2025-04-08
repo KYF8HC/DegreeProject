@@ -1,6 +1,6 @@
 ﻿#include "GUI/WidgetController/DP_UpgradeWidgetController.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Data/DP_WeaponInfo.h"
+#include "Data/DP_UpgradeCardInfo.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 
 
@@ -13,8 +13,13 @@ void UDP_UpgradeWidgetController::GivePlayerWeaponByTag(const FGameplayTag& InWe
 	                                       });
 }
 
+void UDP_UpgradeWidgetController::ApplyEffectToPlayer(const FGuid& UniqueIdentifier) const
+{
+	
+}
+
 void UDP_UpgradeWidgetController::GivePlayerWeaponInternal(const FGameplayTag& WeaponTag,
-	const TSubclassOf<UGameplayAbility>& WeaponClass) const
+                                                           const TSubclassOf<UGameplayAbility>& WeaponClass) const
 {
 	UDP_AbilitySystemComponent* ASC = Cast<UDP_AbilitySystemComponent>(AbilitySystemComponentRef);
 	if (ASC == nullptr) return;

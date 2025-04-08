@@ -2,7 +2,7 @@
 
 #include "GameplayAbilitySpec.h"
 #include "Characters/Enemy/DP_EnemyCharacter.h"
-#include "Data/DP_WeaponInfo.h"
+#include "Data/DP_UpgradeCardInfo.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"

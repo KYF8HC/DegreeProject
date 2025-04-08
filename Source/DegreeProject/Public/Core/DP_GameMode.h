@@ -8,7 +8,7 @@
 #include "DP_GameMode.generated.h"
 
 class UGameplayAbility;
-class UDP_WeaponInfo;
+class UDP_UpgradeCardInfo;
 class ADP_EnemyCharacter;
 class UDP_CharacterClassInfo;
 
