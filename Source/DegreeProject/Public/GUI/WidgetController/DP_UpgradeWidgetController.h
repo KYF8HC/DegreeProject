@@ -5,6 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "DP_UpgradeWidgetController.generated.h"
 
+class UGameplayEffect;
 class UGameplayAbility;
 class UDP_UpgradeCardInfo;
 
@@ -23,8 +24,9 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon Info")
-	TObjectPtr<UDP_UpgradeCardInfo> WeaponInfo{};
+	TObjectPtr<UDP_UpgradeCardInfo> UpgradeCardInfo{};
 
 	void GivePlayerWeaponInternal(const FGameplayTag& WeaponTag,
 	                              const TSubclassOf<UGameplayAbility>& WeaponClass) const;
+	void ApplyEffectToPlayerInternal(const TSubclassOf<UGameplayEffect>& EffectClass) const;
 };

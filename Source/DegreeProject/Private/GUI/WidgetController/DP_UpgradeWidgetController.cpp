@@ -6,7 +6,7 @@
 
 void UDP_UpgradeWidgetController::GivePlayerWeaponByTag(const FGameplayTag& InWeaponTag)
 {
-	WeaponInfo->FindAbilityClassByTagAsync(InWeaponTag,
+	UpgradeCardInfo->FindAbilityClassByTagAsync(InWeaponTag,
 	                                       [this](const FGameplayTag& WeaponTag, const TSubclassOf<UGameplayAbility>& LoadedAbility)
 	                                       {
 		                                       GivePlayerWeaponInternal(WeaponTag, LoadedAbility);
@@ -15,7 +15,11 @@ void UDP_UpgradeWidgetController::GivePlayerWeaponByTag(const FGameplayTag& InWe
 
 void UDP_UpgradeWidgetController::ApplyEffectToPlayer(const FGuid& UniqueIdentifier) const
 {
-	
+	UpgradeCardInfo->FindEffectClassByUniqueIdentifierAsync(UniqueIdentifier,
+															[this](const TSubclassOf<UGameplayEffect>& LoadedEffect)
+															{
+																ApplyEffectToPlayerInternal(LoadedEffect);
+															});
 }
 
 void UDP_UpgradeWidgetController::GivePlayerWeaponInternal(const FGameplayTag& WeaponTag,
@@ -24,6 +28,15 @@ void UDP_UpgradeWidgetController::GivePlayerWeaponInternal(const FGameplayTag& W
 	UDP_AbilitySystemComponent* ASC = Cast<UDP_AbilitySystemComponent>(AbilitySystemComponentRef);
 	if (ASC == nullptr) return;
 	ASC->GivePlayerWeapon(WeaponTag, WeaponClass);
+}
+
+void UDP_UpgradeWidgetController::ApplyEffectToPlayerInternal(const TSubclassOf<UGameplayEffect>& EffectClass) const
+{
+	const FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponentRef->MakeEffectContext();
+	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponentRef->MakeOutgoingSpec(
+		EffectClass, 1, EffectContextHandle);
+	
+	AbilitySystemComponentRef->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
 
 void UDP_UpgradeWidgetController::InitializeWidgetController()
