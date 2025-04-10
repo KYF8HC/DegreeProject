@@ -4,30 +4,35 @@
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 
 
-void UDP_UpgradeWidgetController::GivePlayerWeaponByTag(const FGameplayTag& InWeaponTag)
+void UDP_UpgradeWidgetController::GiveWeaponToPlayer(const FGuid& UniqueIdentifier)
 {
-	UpgradeCardInfo->FindAbilityClassByTagAsync(InWeaponTag,
+	UpgradeCardInfo->LoadWeaponClassByGuidAsync(UniqueIdentifier,
 	                                       [this](const FGameplayTag& WeaponTag, const TSubclassOf<UGameplayAbility>& LoadedAbility)
 	                                       {
-		                                       GivePlayerWeaponInternal(WeaponTag, LoadedAbility);
+		                                       GiveWeaponToPlayerInternal(WeaponTag, LoadedAbility);
 	                                       });
 }
 
-void UDP_UpgradeWidgetController::ApplyEffectToPlayer(const FGuid& UniqueIdentifier) const
+void UDP_UpgradeWidgetController::ApplyEffectToPlayer(const FGuid& UniqueIdentifier)
 {
-	UpgradeCardInfo->FindEffectClassByUniqueIdentifierAsync(UniqueIdentifier,
+	UpgradeCardInfo->LoadEffectClassByGuidAsync(UniqueIdentifier,
 															[this](const TSubclassOf<UGameplayEffect>& LoadedEffect)
 															{
 																ApplyEffectToPlayerInternal(LoadedEffect);
 															});
 }
 
-void UDP_UpgradeWidgetController::GivePlayerWeaponInternal(const FGameplayTag& WeaponTag,
-                                                           const TSubclassOf<UGameplayAbility>& WeaponClass) const
+TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int NumberOfCards) const
+{
+	return UpgradeCardInfo->GetNumberOfUniqueCards(NumberOfCards); 
+}
+
+void UDP_UpgradeWidgetController::GiveWeaponToPlayerInternal(const FGameplayTag& WeaponTag,
+                                                             const TSubclassOf<UGameplayAbility>& WeaponClass) const
 {
 	UDP_AbilitySystemComponent* ASC = Cast<UDP_AbilitySystemComponent>(AbilitySystemComponentRef);
 	if (ASC == nullptr) return;
-	ASC->GivePlayerWeapon(WeaponTag, WeaponClass);
+	ASC->GiveWeaponToPlayerByTag(WeaponTag, WeaponClass);
 }
 
 void UDP_UpgradeWidgetController::ApplyEffectToPlayerInternal(const TSubclassOf<UGameplayEffect>& EffectClass) const

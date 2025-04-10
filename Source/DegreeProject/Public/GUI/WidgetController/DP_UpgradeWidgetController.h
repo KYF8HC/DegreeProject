@@ -5,6 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "DP_UpgradeWidgetController.generated.h"
 
+struct FUpgradeCardInfo;
 class UGameplayEffect;
 class UGameplayAbility;
 class UDP_UpgradeCardInfo;
@@ -16,17 +17,20 @@ class DEGREEPROJECT_API UDP_UpgradeWidgetController : public UDP_WidgetControlle
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void GivePlayerWeaponByTag(const FGameplayTag& WeaponTag);
+	void GiveWeaponToPlayer(const FGuid& UniqueIdentifier);
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToPlayer(const FGuid& UniqueIdentifier) const;
+	void ApplyEffectToPlayer(const FGuid& UniqueIdentifier);
+
+	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards) const;
+	
 	virtual void InitializeWidgetController() override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon Info")
 	TObjectPtr<UDP_UpgradeCardInfo> UpgradeCardInfo{};
 
-	void GivePlayerWeaponInternal(const FGameplayTag& WeaponTag,
+	void GiveWeaponToPlayerInternal(const FGameplayTag& WeaponTag,
 	                              const TSubclassOf<UGameplayAbility>& WeaponClass) const;
 	void ApplyEffectToPlayerInternal(const TSubclassOf<UGameplayEffect>& EffectClass) const;
 };

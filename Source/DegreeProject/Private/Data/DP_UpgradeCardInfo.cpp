@@ -21,13 +21,14 @@ FUpgradeCardInfo UDP_UpgradeCardInfo::FindUpgradeCardInfoForTag(const FGameplayT
 	return FUpgradeCardInfo();
 }
 
-void UDP_UpgradeCardInfo::FindAbilityClassByTagAsync(const FGameplayTag& WeaponTag, TFunction<void(const FGameplayTag&, const TSubclassOf<UGameplayAbility>&)> Callback)
+void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const FGameplayTag&, const TSubclassOf<UGameplayAbility>&)> Callback)
 {
 	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
 	{
-		if (UpgradeCardInfo.AbilityTag == WeaponTag)
+		if (UpgradeCardInfo.UpgradeCardGuid == UniqueIdentifier)
 		{
 			TSoftClassPtr<UGameplayAbility> SoftClass = UpgradeCardInfo.AbilityClass;
+			FGameplayTag WeaponTag = UpgradeCardInfo.AbilityTag;
 			
 			CancelAsyncLoading();
 			AsyncLoad(SoftClass, [WeaponTag, SoftClass, Callback]()
@@ -42,10 +43,10 @@ void UDP_UpgradeCardInfo::FindAbilityClassByTagAsync(const FGameplayTag& WeaponT
 	}
 
 	// If not found
-	Callback(WeaponTag, nullptr);
+	Callback(FGameplayTag(), nullptr);
 }
 
-void UDP_UpgradeCardInfo::FindEffectClassByUniqueIdentifierAsync(const FGuid& UniqueIdentifier,
+void UDP_UpgradeCardInfo::LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifier,
 	TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback)
 {
 	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
@@ -68,6 +69,26 @@ void UDP_UpgradeCardInfo::FindEffectClassByUniqueIdentifierAsync(const FGuid& Un
 
 	// If not found
 	Callback(nullptr);
+}
+
+TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(int NumberOfCards) const
+{
+	TArray<FUpgradeCardInfo> UniqueCards;
+	if (UpgradeCardInfoArray.Num() < 3)
+	{
+		UniqueCards = UpgradeCardInfoArray;
+	}
+	else
+	{
+		TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
+		ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
+
+		for (int32 i = 0; i < NumberOfCards; ++i)
+		{
+			UniqueCards.Add(ShuffledArray[i]);
+		}
+	}
+	return UniqueCards;
 }
 
 #if WITH_EDITOR

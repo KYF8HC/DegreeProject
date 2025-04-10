@@ -1,14 +1,14 @@
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "FDP_GameplayTags.h"
 
-void UDP_AbilitySystemComponent::GivePlayerWeapon(const FGameplayTag& WeaponTag,
+void UDP_AbilitySystemComponent::GiveWeaponToPlayerByTag(const FGameplayTag& WeaponTag,
                                                   const TSubclassOf<UGameplayAbility>& LoadedAbility)
 {
-	GivePlayerWeaponInternal(LoadedAbility);
+	GiveWeaponPlayByTagInternal(LoadedAbility);
 	BindAbilityCooldown(WeaponTag);
 }
 
-void UDP_AbilitySystemComponent::GivePlayerWeaponInternal(const TSubclassOf<UGameplayAbility>& AbilityClass)
+void UDP_AbilitySystemComponent::GiveWeaponPlayByTagInternal(const TSubclassOf<UGameplayAbility>& AbilityClass)
 {
 	if (AbilityClass)
 	{

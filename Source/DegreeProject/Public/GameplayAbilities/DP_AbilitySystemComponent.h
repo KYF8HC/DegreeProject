@@ -15,10 +15,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Ability System")
 	TObjectPtr<AActor> TargetActorRef{};
 
-	void GivePlayerWeapon(const FGameplayTag& WeaponTag, const TSubclassOf<UGameplayAbility>& LoadedAbility);
+	void GiveWeaponToPlayerByTag(const FGameplayTag& WeaponTag, const TSubclassOf<UGameplayAbility>& LoadedAbility);
 
 protected:
-	void GivePlayerWeaponInternal(const TSubclassOf<UGameplayAbility>& AbilityClass);
+	void GiveWeaponPlayByTagInternal(const TSubclassOf<UGameplayAbility>& AbilityClass);
 	void BindAbilityCooldown(const FGameplayTag& WeaponTag);
 	
 	UFUNCTION()
