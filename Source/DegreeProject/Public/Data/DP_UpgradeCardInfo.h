@@ -46,6 +46,24 @@ struct FUpgradeCardInfo
 	FGuid UpgradeCardGuid{};
 };
 
+USTRUCT(BlueprintType)
+struct FUpgradeCardWidgetProperties
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UTexture2D> Icon{};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText Description{};
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EUpgradeCardType UpgradeCardType{EUpgradeCardType::None};
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FGuid UpgradeCardGuid{};
+};
+
 UCLASS()
 class DEGREEPROJECT_API UDP_UpgradeCardInfo : public UDataAsset, public FAsyncMixin
 {

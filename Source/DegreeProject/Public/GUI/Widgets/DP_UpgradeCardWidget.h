@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Data/DP_UpgradeCardInfo.h"
 #include "DP_UpgradeCardWidget.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnButtonClicked, const FGuid&, UniqueIdentifier, EUpgradeCardType, CardType);
 
 UCLASS()
 class DEGREEPROJECT_API UDP_UpgradeCardWidget : public UUserWidget
@@ -11,19 +14,25 @@ class DEGREEPROJECT_API UDP_UpgradeCardWidget : public UUserWidget
 
 public:
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnWidgetContentSet();
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "UpgradeCard")
+	FOnButtonClicked OnButtonClickedDelegate{};
 	
-	void SetWidgetContent(const FText& DescText, UTexture2D* Icon, FGuid UniqueIdentifier);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWidgetPropertiesSet();
+	
+	void SetWidgetProperties(const FUpgradeCardWidgetProperties& WidgetProperties);
 
 protected:
 
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
 	FText CardDescText{};
 	
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
 	TObjectPtr<UTexture2D> ImageIcon{};
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
+	EUpgradeCardType CardType{EUpgradeCardType::None};
 	
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
 	FGuid CardGuid{};
 };

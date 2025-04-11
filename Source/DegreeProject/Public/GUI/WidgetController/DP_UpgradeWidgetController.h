@@ -3,12 +3,11 @@
 #include "CoreMinimal.h"
 #include "DP_WidgetController.h"
 #include "GameplayTagContainer.h"
+#include "Data/DP_UpgradeCardInfo.h"
 #include "DP_UpgradeWidgetController.generated.h"
 
-struct FUpgradeCardInfo;
 class UGameplayEffect;
 class UGameplayAbility;
-class UDP_UpgradeCardInfo;
 
 UCLASS(BlueprintType, Blueprintable)
 class DEGREEPROJECT_API UDP_UpgradeWidgetController : public UDP_WidgetController
@@ -16,21 +15,15 @@ class DEGREEPROJECT_API UDP_UpgradeWidgetController : public UDP_WidgetControlle
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void GiveWeaponToPlayer(const FGuid& UniqueIdentifier);
-
-	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToPlayer(const FGuid& UniqueIdentifier);
-
+	void GrantUpgrade(FGuid UniqueIdentifier, EUpgradeCardType CardType);
 	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards) const;
-	
 	virtual void InitializeWidgetController() override;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon Info")
 	TObjectPtr<UDP_UpgradeCardInfo> UpgradeCardInfo{};
 
-	void GiveWeaponToPlayerInternal(const FGameplayTag& WeaponTag,
-	                              const TSubclassOf<UGameplayAbility>& WeaponClass) const;
-	void ApplyEffectToPlayerInternal(const TSubclassOf<UGameplayEffect>& EffectClass) const;
+	void GiveWeaponToPlayerCallback(const FGameplayTag& WeaponTag,
+	                                const TSubclassOf<UGameplayAbility>& WeaponClass) const;
+	void ApplyEffectToPlayerCallback(const TSubclassOf<UGameplayEffect>& EffectClass) const;
 };

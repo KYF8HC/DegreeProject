@@ -1,9 +1,10 @@
 ﻿#include "GUI/Widgets/DP_UpgradeCardWidget.h"
 
-void UDP_UpgradeCardWidget::SetWidgetContent(const FText& DescText, UTexture2D* Icon, const FGuid UniqueIdentifier)
+void UDP_UpgradeCardWidget::SetWidgetProperties(const FUpgradeCardWidgetProperties& WidgetProperties)
 {
-	CardDescText = DescText;
-	ImageIcon = Icon;
-	CardGuid = UniqueIdentifier;
-	OnWidgetContentSet();
+	CardDescText = WidgetProperties.Description;
+	ImageIcon = WidgetProperties.Icon;
+	CardType = WidgetProperties.UpgradeCardType;
+	CardGuid = WidgetProperties.UpgradeCardGuid;
+	OnWidgetPropertiesSet();
 }

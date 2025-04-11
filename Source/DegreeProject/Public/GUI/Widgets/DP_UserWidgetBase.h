@@ -16,7 +16,7 @@ public:
 	TObjectPtr<UObject> WidgetControllerRef{};
 	
 	UFUNCTION(BlueprintCallable)
-	void SetWidgetController(UObject* InControllerRef);
+	virtual void SetWidgetController(UObject* InControllerRef);
 
 	UFUNCTION(BlueprintCallable)
 	void EnableWidget(bool bEnable);

@@ -20,15 +20,11 @@ void ADP_ShootingWeaponActor::Tick(float DeltaTime)
 	SetProjectileSpawnPoints();
 	for (FTransform& SpawnPoint : ProjectileSpawnPoints)
 	{
-		//FTransform WorldTransform = GetActorTransform() * SpawnPoint;
-		FVector SpawnLocation = SpawnPoint.GetLocation();
-		FRotator SpawnRotation = SpawnPoint.Rotator();
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
 
-		ADP_Projectile* Projectile = GetWorld()->SpawnActor<ADP_Projectile>(
-			ProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+		ADP_Projectile* Projectile = GetWorld()->SpawnActorDeferred<ADP_Projectile>(
+			ProjectileClass, SpawnPoint, this);
 		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+		Projectile->FinishSpawning(SpawnPoint);
 	}
 
 	Ammo -= ProjectileSpawnPoints.Num();
