@@ -5,6 +5,7 @@
 #include "Events/DP_Event.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
+#include "GUI/WidgetController/DP_WidgetController.h"
 #include "DP_GameMode.generated.h"
 
 class UGameplayAbility;
@@ -25,6 +26,11 @@ public:
 
 	ADP_GameMode();
 
+
+	//TEMP!!!!!!!!!!!!!!!!!!!!!!!
+	UPROPERTY()
+	FWidgetControllerParams WidgetControllerParams;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UDP_CharacterClassInfo> CharacterClassInfo;
 	

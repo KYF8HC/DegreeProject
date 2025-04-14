@@ -2,6 +2,7 @@
 #include "DP_MainEventHandlerSubsystem.h"
 #include "Core/DP_GameMode.h"
 #include "Core/Events/DP_EventHandler.h"
+#include "GUI/Widgets/DP_UpgradeCardMenu.h"
 
 void UDP_MainMenuWidget::NativeConstruct()
 {
@@ -14,9 +15,7 @@ void UDP_MainMenuWidget::NativeConstruct()
 
 void UDP_MainMenuWidget::OnStartGame()
 {
-	UDP_EventHandler* MainEventHandler = GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->
-														GetMainEventHandler();
-	MainEventHandler->PushEvent(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode()));
+	CreateAndPushEventWidget<UDP_UpgradeCardMenu>(GetGameInstance(), UpgradeWidgetClass,TEXT("UpgradeCardMenu"));
 }
 
 void UDP_MainMenuWidget::OnBegin(bool bFirstTime)

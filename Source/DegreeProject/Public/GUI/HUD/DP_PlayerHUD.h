@@ -12,13 +12,22 @@ class UDP_WidgetController;
 class UAbilitySystemComponent;
 class UDP_OverlayWidgetController;
 
+UENUM(BlueprintType)
+enum class EWidgetType : uint8
+{
+	None,
+	Overlay,
+	Upgrade,
+	PauseMenu
+};
+
 UCLASS()
 class DEGREEPROJECT_API ADP_PlayerHUD : public AHUD
 {
 	GENERATED_BODY()
 
 public:
-	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+	void InitOverlay(APlayerController* PC, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
 	//Widget Controller Getters
 	UDP_WidgetController* GetOverlayWidgetController(const FWidgetControllerParams& Params);
@@ -29,12 +38,16 @@ public:
 	UDP_UserWidgetBase* GetUpgradeWidget(const FWidgetControllerParams& Params = FWidgetControllerParams());
 	UDP_UserWidgetBase* GetPauseMenuWidget();
 
+	FWidgetControllerParams& GetWidgetControllerParams() { return WidgetControllerParams; }
+
 protected:
 
+	UPROPERTY()
+	FWidgetControllerParams WidgetControllerParams;
+	
 	//Internal Helper functions
 	UDP_WidgetController* CreateWidgetController(const FWidgetControllerParams& Params, TSubclassOf<UDP_WidgetController> WidgetControllerClass);
 	UDP_UserWidgetBase*  CreateWidgetHelper(const TSubclassOf<UDP_UserWidgetBase>& WidgetClass) const;
-
 private:
 #pragma region "Widgets"
 

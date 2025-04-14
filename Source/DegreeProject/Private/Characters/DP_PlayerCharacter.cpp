@@ -1,18 +1,16 @@
 ﻿#include "Characters/DP_PlayerCharacter.h"
-
-#include "FDP_GameplayTags.h"
 #include "Camera/CameraComponent.h"
+#include "Core/DP_GameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
-#include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
 #include "GUI/HUD/DP_PlayerHUD.h"
 #include "Player/DP_PlayerController.h"
-#include "Player/DP_PlayerState.h"
 
 
 ADP_PlayerCharacter::ADP_PlayerCharacter()
 {
+	SetNetUpdateFrequency(100.0f);
 	PrimaryActorTick.bCanEverTick = false;
 
 	SpringArmComponentRef = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
@@ -20,6 +18,12 @@ ADP_PlayerCharacter::ADP_PlayerCharacter()
 
 	CameraComponentRef = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponentRef->SetupAttachment(SpringArmComponentRef);
+
+	AbilitySystemComponentRef = CreateDefaultSubobject<UDP_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponentRef->SetIsReplicated(true);
+	AbilitySystemComponentRef->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	AttributeSetRef = CreateDefaultSubobject<UDP_AttributeSet>(TEXT("AttributeSet"));
 }
 
 void ADP_PlayerCharacter::PossessedBy(AController* NewController)
@@ -39,11 +43,12 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	//Init for client
 	PlayerControllerRef = Cast<ADP_PlayerController>(GetController());
 	InitAbilityActorInfo();
+	//ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
+	//PlayerHUD->InitOverlay(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
 }
 
 void ADP_PlayerCharacter::Begin()
 {
-	//UDP_AbilitySystemLibrary::GiveWeaponToPlayer(this, StartWeaponTag, AbilitySystemComponentRef);
 }
 
 
@@ -79,23 +84,10 @@ void ADP_PlayerCharacter::Death()
 	}
 }
 
-void ADP_PlayerCharacter::InitOverlay()
-{
-	//if (PlayerControllerRef)
-	//{
-	//	ADP_PlayerHUD* HUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
-	//	if (HUD)
-	//	{
-	//		HUD->InitOverlay(PlayerControllerRef, GetPlayerState(), AbilitySystemComponentRef, AttributeSetRef);
-	//	}
-	//}
-}
 
 void ADP_PlayerCharacter::InitAbilityActorInfo()
 {
-	auto PS = Cast<ADP_PlayerState>(GetPlayerState());
-	AbilitySystemComponentRef = CastChecked<UDP_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
-	AttributeSetRef = CastChecked<UDP_AttributeSet>(PS->GetAttributeSet());
-
-	AbilitySystemComponentRef->InitAbilityActorInfo(PS, this);
+	AbilitySystemComponentRef->InitAbilityActorInfo(this, this);
+	UE_LOG(LogTemp, Warning, TEXT("ADP_PlayerCharacter::InitAbilityActorInfo"));
+	Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->WidgetControllerParams = FWidgetControllerParams(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
 }

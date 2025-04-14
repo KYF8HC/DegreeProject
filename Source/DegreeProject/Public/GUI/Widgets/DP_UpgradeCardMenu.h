@@ -5,6 +5,7 @@
 #include "DP_UpgradeCardMenu.generated.h"
 
 
+class UDP_WidgetController;
 enum class EUpgradeCardType : uint8;
 struct FUpgradeCardInfo;
 class UDP_UpgradeCardWidget;
@@ -20,13 +21,18 @@ public:
 	void GetCardsInfo(bool bFirstTime);
 
 	virtual void OnBegin(bool bFirstTime) override;
+
 protected:
+
 	
 	UFUNCTION()
 	void ChoseUpgrade(const FGuid& UniqueIdentifier, EUpgradeCardType CardType);
 	virtual void NativePreConstruct() override;
-	
+
 private:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCardMenu")
+	TSubclassOf<UDP_WidgetController> WidgetControllerClass{};
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCardMenu")
 	TArray<FUpgradeCardInfo> CardsInfo{};

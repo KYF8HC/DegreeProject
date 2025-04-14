@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
+#include "SubSystems/GameInstanceSubsystem.h"
 #include "DP_MainEventHandlerSubsystem.generated.h"
 
 class UDP_EventHandler;

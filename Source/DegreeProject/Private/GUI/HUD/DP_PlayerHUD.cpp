@@ -1,8 +1,9 @@
 ﻿#include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/WidgetController/DP_OverlayWidgetController.h"
+#include "GUI/Widgets/DP_EventUserWidgetBase.h"
 #include "GUI/Widgets/DP_UserWidgetBase.h"
 
-void ADP_PlayerHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC,
+void ADP_PlayerHUD::InitOverlay(APlayerController* PC, UAbilitySystemComponent* ASC,
                                 UAttributeSet* AS)
 {
 	checkf(OverlayWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: OverlayWidgetClass is not set in %s"), *GetName());
@@ -13,12 +14,13 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilit
 	       TEXT("ADP_PlayerHUD::InitOverlay: UpgradeWidgetControllerClass is not set in %s"), *GetName());
 	checkf(PauseMenuWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: PauseMenuWidgetClass is not set in %s"), *GetName());
 
-	const FWidgetControllerParams Params(PC, PS, ASC, AS);
+	WidgetControllerParams = FWidgetControllerParams(PC, ASC, AS);
 
-	GetOverlayWidget(Params);
-	GetUpgradeWidget(Params)->EnableWidget(true);
-	GetPauseMenuWidget();
+	//GetOverlayWidget(Params);
+	//GetUpgradeWidget(Params);
+	//GetPauseMenuWidget();
 }
+
 
 #pragma region "Widget Getters"
 UDP_UserWidgetBase* ADP_PlayerHUD::GetOverlayWidget(const FWidgetControllerParams& Params)
@@ -35,8 +37,8 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetUpgradeWidget(const FWidgetControllerParam
 {
 	if (UpgradeWidgetRef == nullptr)
 	{
-		UpgradeWidgetRef = CreateWidgetHelper(UpgradeWidgetClass);
-		UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController(Params));
+		//UpgradeWidgetRef = CreateAndPushEventWidget<UDP_EventUserWidgetBase>(this, TEXT("UpgradeWidget"));
+		//UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController(Params));
 	}
 	return UpgradeWidgetRef;
 }

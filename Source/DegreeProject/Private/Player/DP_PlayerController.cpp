@@ -4,10 +4,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Characters/DP_PlayerCharacter.h"
 #include "Core/DP_GameMode.h"
-#include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/Widgets/DP_DamageTextComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/DP_PlayerState.h"
 
 void ADP_PlayerController::SetupInputComponent()
 {
@@ -62,12 +60,6 @@ void ADP_PlayerController::OnBegin(bool bFirstTime)
 void ADP_PlayerController::OnBeginClient_Implementation()
 {
 	SetCanReceiveInput(true);
-	ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(GetHUD());
-	ADP_PlayerState* PlayerStateRef = Cast<ADP_PlayerState>(PlayerState);
-	PlayerHUD->InitOverlay(this,
-	                       PlayerStateRef,
-	                       UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(PlayerStateRef),
-	                       PlayerStateRef->GetAttributeSet());
 }
 
 void ADP_PlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter,

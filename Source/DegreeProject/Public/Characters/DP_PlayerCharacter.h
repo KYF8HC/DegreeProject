@@ -29,7 +29,6 @@ public:
 	
 	void HandleMove(const FVector2D& InputAxisVector);
 	void HandleLook(const FVector2D& InputAxisVector);
-	void InitOverlay();
 	virtual bool IsEnemy() override { return false; }
 	
 protected:

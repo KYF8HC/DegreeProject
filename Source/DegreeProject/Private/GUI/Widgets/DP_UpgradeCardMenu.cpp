@@ -1,4 +1,6 @@
 ﻿#include "GUI/Widgets/DP_UpgradeCardMenu.h"
+
+#include "Core/DP_GameMode.h"
 #include "GUI/WidgetController/DP_UpgradeWidgetController.h"
 #include "GUI/Widgets/DP_UpgradeCardWidget.h"
 
@@ -21,7 +23,6 @@ void UDP_UpgradeCardMenu::GetCardsInfo(bool bFirstTime)
 			WidgetProperties.UpgradeCardType = CardsInfo[i].UpgradeCardType;
 			WidgetProperties.UpgradeCardGuid = CardsInfo[i].UpgradeCardGuid;
 			CardWidgets[i]->SetWidgetProperties(WidgetProperties);
-			//CardWidgets[i]->SetWidgetContent();	
 		}
 	}
 }
@@ -31,6 +32,12 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 	Super::OnBegin(bFirstTime);
 	if (bFirstTime)
 	{
+		
+		auto WidgetController = NewObject<UDP_WidgetController>(this, WidgetControllerClass);
+		WidgetController->SetWidgetControllerParams(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->WidgetControllerParams);
+		WidgetController->BindCallbacksToDependencies();
+		WidgetControllerRef = WidgetController;
+		
 		for (UDP_UpgradeCardWidget* CardWidget : CardWidgets)
 		{
 			if (CardWidget)
@@ -40,6 +47,7 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 		}
 	}
 	GetCardsInfo(bFirstTime);
+	EnableWidget(true);
 }
 
 void UDP_UpgradeCardMenu::ChoseUpgrade(const FGuid& UniqueIdentifier, EUpgradeCardType CardType)
