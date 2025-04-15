@@ -71,21 +71,53 @@ void UDP_UpgradeCardInfo::LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifi
 	Callback(nullptr);
 }
 
-TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(int NumberOfCards) const
+TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly) const
 {
 	TArray<FUpgradeCardInfo> UniqueCards;
 	if (UpgradeCardInfoArray.Num() < 3)
 	{
 		UniqueCards = UpgradeCardInfoArray;
 	}
+
+	bWeaponsOnly = true;
+	
+	if (bWeaponsOnly)
+	{
+		TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
+		ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
+
+		int8 Count = 0;
+		for (const FUpgradeCardInfo& Info : ShuffledArray)
+		{
+			if (Info.UpgradeCardType == EUpgradeCardType::Weapon)
+			{
+				UniqueCards.Add(Info);
+				Count++;
+			}
+			if (Count >= NumberOfCards)
+			{
+				break;
+			}
+		}
+	}
+	
 	else
 	{
 		TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
 		ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
 
-		for (int32 i = 0; i < NumberOfCards; ++i)
+		int8 Count = 0;
+		for (const FUpgradeCardInfo& Info : ShuffledArray)
 		{
-			UniqueCards.Add(ShuffledArray[i]);
+			if (Info.UpgradeCardType == EUpgradeCardType::Effect)
+			{
+				UniqueCards.Add(Info);
+				Count++;
+			}
+			if (Count >= NumberOfCards)
+			{
+				break;
+			}
 		}
 	}
 	return UniqueCards;

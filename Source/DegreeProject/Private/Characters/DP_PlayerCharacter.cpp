@@ -10,7 +10,7 @@
 ADP_PlayerCharacter::ADP_PlayerCharacter()
 {
 	SetNetUpdateFrequency(100.0f);
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArmComponentRef = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponentRef->SetupAttachment(RootComponent);
@@ -89,5 +89,33 @@ void ADP_PlayerCharacter::InitAbilityActorInfo()
 	UE_LOG(LogTemp, Warning, TEXT("ADP_PlayerCharacter::InitAbilityActorInfo"));
 	ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
 	PlayerHUD->InitOverlay(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
+}
+
+void ADP_PlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
+	AbilitySystemComponentRef->GetAllAbilities(AbilityHandles);
+
+	for (const FGameplayAbilitySpecHandle& AbilityHandle : AbilityHandles)
+	{
+		FGameplayAbilitySpec* Spec = AbilitySystemComponentRef->FindAbilitySpecFromHandle(AbilityHandle);
+		if (Spec && Spec->Ability)
+		{
+			UGameplayAbility* Ability = Spec->Ability;
+
+			// Option 1: Get tags from the Ability directly
+			const FGameplayTagContainer& AbilityTags = Ability->AbilityTags;
+
+			// Option 2: Get Activation Owned Tags (if that's what you want)
+			// const FGameplayTagContainer& ActivationTags = Spec->DynamicAbilityTags;
+
+			// Debug: Print or log the tags
+			for (const FGameplayTag& Tag : AbilityTags)
+			{
+				UE_LOG(LogTemp, Log, TEXT("Ability Tag: %s"), *Tag.ToString());
+			}
+		}
+	}
 }
 

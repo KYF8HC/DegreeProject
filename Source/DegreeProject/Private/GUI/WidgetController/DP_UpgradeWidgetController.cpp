@@ -27,8 +27,32 @@ void UDP_UpgradeWidgetController::GrantUpgrade(FGuid UniqueIdentifier, EUpgradeC
 	}
 }
 
-TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int NumberOfCards) const
+TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly) const
 {
+	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
+	AbilitySystemComponentRef->GetAllAbilities(AbilityHandles);
+
+	for (const FGameplayAbilitySpecHandle& AbilityHandle : AbilityHandles)
+	{
+		FGameplayAbilitySpec* Spec = AbilitySystemComponentRef->FindAbilitySpecFromHandle(AbilityHandle);
+		if (Spec && Spec->Ability)
+		{
+			UGameplayAbility* Ability = Spec->Ability;
+
+			// Option 1: Get tags from the Ability directly
+			const FGameplayTagContainer& AbilityTags = Ability->AbilityTags;
+
+			// Option 2: Get Activation Owned Tags (if that's what you want)
+			// const FGameplayTagContainer& ActivationTags = Spec->DynamicAbilityTags;
+
+			// Debug: Print or log the tags
+			for (const FGameplayTag& Tag : AbilityTags)
+			{
+				UE_LOG(LogTemp, Log, TEXT("Ability Tag: %s"), *Tag.ToString());
+			}
+		}
+	}
+	
 	return UpgradeCardInfo->GetNumberOfUniqueCards(NumberOfCards);
 }
 

@@ -49,4 +49,7 @@ private:
 	TObjectPtr<ADP_PlayerController> PlayerControllerRef{};
 	
 	void InitAbilityActorInfo();
+
+public:
+	virtual void Tick(float DeltaSeconds) override;
 };

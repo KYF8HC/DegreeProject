@@ -16,7 +16,7 @@ class DEGREEPROJECT_API UDP_UpgradeWidgetController : public UDP_WidgetControlle
 
 public:
 	void GrantUpgrade(FGuid UniqueIdentifier, EUpgradeCardType CardType);
-	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards) const;
+	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly = false) const;
 	virtual void InitializeWidgetController() override;
 
 protected:

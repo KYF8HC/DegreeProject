@@ -76,7 +76,7 @@ public:
 	FUpgradeCardInfo FindUpgradeCardInfoForTag(const FGameplayTag& WeaponTag, bool bLogNotFound) const;
 	void LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const FGameplayTag&, const TSubclassOf<UGameplayAbility>&)> Callback);
 	void LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback);
-	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards) const;
+	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly = false) const;
 
 	
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
