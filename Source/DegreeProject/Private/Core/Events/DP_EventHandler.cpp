@@ -56,18 +56,18 @@ void UDP_EventHandler::TickComponent(float DeltaTime, enum ELevelTick TickType,
 
 	UpdateEvents();
 
-	//if (CurrentEvent.GetObject() != nullptr)
-	//{
-	//	const FString EventMessage = FString::Printf(TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
-	//	LogOnScreen(this, EventMessage, FColor::Red, 0.0f);
-	//}
+	if (CurrentEvent.GetObject() != nullptr)
+	{
+		const FString EventMessage = FString::Printf(TEXT("Current Event: %s"), *CurrentEvent.GetObject()->GetName());
+		LogOnScreen(this, EventMessage, FColor::Red, 0.0f);
+	}
 }
 
 void UDP_EventHandler::UpdateEvents()
 {
 	if (EventStack.Num() == 0)
 		return;
-	
+
 	if (CurrentEvent.GetObject() == nullptr)
 	{
 		StartedEvents.Remove(nullptr);
@@ -85,23 +85,23 @@ void UDP_EventHandler::UpdateEvents()
 
 	if (CurrentEvent.GetObject())
 	{
-		
 		if (bShouldLogEvents)
 		{
 			UE_LOG(LogTemp, Log, TEXT("Current Event: %s is done: %d"), *CurrentEvent.GetObject()->GetName(),
-			   CurrentEvent->IsDone());
+			       CurrentEvent->IsDone());
 		}
-		
+
 		CurrentEvent->OnUpdate();
 		if (!EventStack.IsEmpty() && EventStack[0] == CurrentEvent)
 		{
 			if (CurrentEvent->IsDone())
 			{
 				UE_LOG(LogTemp, Log, TEXT("Current Event: %s is done"), *CurrentEvent.GetObject()->GetName());
-				CurrentEvent->OnEnd();
 				StartedEvents.Remove(CurrentEvent.GetObject());
 				EventStack.RemoveAt(0);
+				const auto Temp = CurrentEvent;
 				CurrentEvent = nullptr;
+				Temp->OnEnd();
 			}
 		}
 	}

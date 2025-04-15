@@ -17,5 +17,5 @@ void UDP_EventUserWidgetBase::OnEnd()
 
 bool UDP_EventUserWidgetBase::IsDone()
 {
-	return false;
+	return bIsDone;
 }

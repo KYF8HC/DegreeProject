@@ -1,6 +1,8 @@
 ﻿#include "GUI/Widgets/DP_UpgradeCardMenu.h"
-
+#include "DP_MainEventHandlerSubsystem.h"
 #include "Core/DP_GameMode.h"
+#include "Core/Events/DP_EventHandler.h"
+#include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/WidgetController/DP_UpgradeWidgetController.h"
 #include "GUI/Widgets/DP_UpgradeCardWidget.h"
 
@@ -32,12 +34,6 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 	Super::OnBegin(bFirstTime);
 	if (bFirstTime)
 	{
-		
-		auto WidgetController = NewObject<UDP_WidgetController>(this, WidgetControllerClass);
-		WidgetController->SetWidgetControllerParams(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->WidgetControllerParams);
-		WidgetController->BindCallbacksToDependencies();
-		WidgetControllerRef = WidgetController;
-		
 		for (UDP_UpgradeCardWidget* CardWidget : CardWidgets)
 		{
 			if (CardWidget)
@@ -47,7 +43,15 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 		}
 	}
 	GetCardsInfo(bFirstTime);
-	EnableWidget(true);
+}
+
+void UDP_UpgradeCardMenu::OnEnd()
+{
+	Super::OnEnd();
+
+	GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->GetMainEventHandler()->PushEvent
+		(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode()));
+	PlayerHUDRef->ChangeWidget(EWidgetType::Overlay);
 }
 
 void UDP_UpgradeCardMenu::ChoseUpgrade(const FGuid& UniqueIdentifier, EUpgradeCardType CardType)
@@ -57,13 +61,26 @@ void UDP_UpgradeCardMenu::ChoseUpgrade(const FGuid& UniqueIdentifier, EUpgradeCa
 	{
 		UpgradeWidgetController->GrantUpgrade(UniqueIdentifier, CardType);
 	}
+	bIsDone = true;
 }
 
 
 void UDP_UpgradeCardMenu::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+
+	if (CardWidgets.Num() > 0)
+		return;
+
 	CardWidgets.Add(CardWidgetOne);
 	CardWidgets.Add(CardWidgetTwo);
 	CardWidgets.Add(CardWidgetThree);
+}
+
+void UDP_UpgradeCardMenu::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	bIsDone = false;
+	GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->GetMainEventHandler()->PushEvent(this);
 }

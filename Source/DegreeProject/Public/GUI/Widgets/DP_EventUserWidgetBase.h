@@ -1,11 +1,8 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "DP_MainEventHandlerSubsystem.h"
 #include "DP_UserWidgetBase.h"
 #include "Core/Events/DP_Event.h"
-#include "Core/Events/DP_EventHandler.h"
-#include "Kismet/GameplayStatics.h"
 #include "DP_EventUserWidgetBase.generated.h"
 
 UCLASS()
@@ -21,6 +18,9 @@ public:
 
 protected:
 
+	UPROPERTY(BlueprintReadWrite, Category="Event Properties")
+	bool bIsDone{false};
+
 	UFUNCTION(BlueprintImplementableEvent, Category="Widget Events")
 	void OnBeginBP(bool bFirstTime);
 
@@ -31,7 +31,7 @@ protected:
 	void OnEndBP();
 };
 
-
+/*
 template <typename WidgetT = UUserWidget, typename OwnerType = UGameInstance>
 static WidgetT* CreateAndPushEventWidget(OwnerType OwningObject, TSubclassOf<UUserWidget> UserWidgetClass = WidgetT::StaticClass(),  FName WidgetName = NAME_None)
 {
@@ -48,4 +48,4 @@ static WidgetT* CreateAndPushEventWidget(OwnerType OwningObject, TSubclassOf<UUs
 	OwningObject->GetSubsystem<UDP_MainEventHandlerSubsystem>()->GetMainEventHandler()->PushEvent(UserWidget);
 	
 	return UserWidget;
-}
+}*/

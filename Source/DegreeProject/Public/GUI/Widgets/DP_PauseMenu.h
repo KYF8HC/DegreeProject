@@ -14,9 +14,5 @@ public:
 	virtual void OnUpdate() override;
 	virtual void OnEnd() override;
 	virtual bool IsDone() override;
-
-protected:
-
-	UPROPERTY(BlueprintReadWrite, Category="Pause Menu")
-	bool bIsDone = false;
+	
 };

@@ -1,6 +1,5 @@
 ﻿#include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/WidgetController/DP_OverlayWidgetController.h"
-#include "GUI/Widgets/DP_EventUserWidgetBase.h"
 #include "GUI/Widgets/DP_UserWidgetBase.h"
 
 void ADP_PlayerHUD::InitOverlay(APlayerController* PC, UAbilitySystemComponent* ASC,
@@ -14,11 +13,15 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, UAbilitySystemComponent* 
 	       TEXT("ADP_PlayerHUD::InitOverlay: UpgradeWidgetControllerClass is not set in %s"), *GetName());
 	checkf(PauseMenuWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: PauseMenuWidgetClass is not set in %s"), *GetName());
 
-	WidgetControllerParams = FWidgetControllerParams(PC, ASC, AS);
-
-	//GetOverlayWidget(Params);
-	//GetUpgradeWidget(Params);
-	//GetPauseMenuWidget();
+	FWidgetControllerParams Params = FWidgetControllerParams(PC, ASC, AS);
+	
+	GetOverlayWidget(Params)->SetPlayerHUDRef(this);
+	GetUpgradeWidget(Params)->SetPlayerHUDRef(this);
+	GetPauseMenuWidget()->SetPlayerHUDRef(this);
+	GetMainMenuWidget()->SetPlayerHUDRef(this);
+	
+	CurrentWidgetRef = MainMenuWidgetRef;
+	CurrentWidgetRef->EnableWidget(true);
 }
 
 
@@ -30,6 +33,7 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetOverlayWidget(const FWidgetControllerParam
 		OverlayWidgetRef = CreateWidgetHelper(OverlayWidgetClass);
 		OverlayWidgetRef->SetWidgetController(GetOverlayWidgetController(Params));
 	}
+
 	return OverlayWidgetRef;
 }
 
@@ -37,12 +41,21 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetUpgradeWidget(const FWidgetControllerParam
 {
 	if (UpgradeWidgetRef == nullptr)
 	{
-		//UpgradeWidgetRef = CreateAndPushEventWidget<UDP_EventUserWidgetBase>(this, TEXT("UpgradeWidget"));
-		//UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController(Params));
+		UpgradeWidgetRef = CreateWidgetHelper(UpgradeWidgetClass);
+		UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController(Params));
 	}
+
 	return UpgradeWidgetRef;
 }
 
+
+UDP_UserWidgetBase* ADP_PlayerHUD::GetMainMenuWidget()
+{
+	if (MainMenuWidgetRef == nullptr)
+		MainMenuWidgetRef = CreateWidgetHelper(MainMenuWidgetClass);
+
+	return MainMenuWidgetRef;
+}
 
 UDP_UserWidgetBase* ADP_PlayerHUD::GetPauseMenuWidget()
 {
@@ -50,6 +63,35 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetPauseMenuWidget()
 		PauseMenuWidgetRef = CreateWidgetHelper(PauseMenuWidgetClass);
 
 	return PauseMenuWidgetRef;
+}
+
+void ADP_PlayerHUD::ChangeWidget(EWidgetType WidgetType)
+{
+
+	if (CurrentWidgetRef != nullptr)
+		CurrentWidgetRef->EnableWidget(false);
+	
+	switch (WidgetType)
+	{
+		case EWidgetType::MainMenu:
+			CurrentWidgetRef = GetMainMenuWidget();
+			break;
+		case EWidgetType::Overlay:
+			CurrentWidgetRef = GetOverlayWidget();
+			break;
+		case EWidgetType::Upgrade:
+			CurrentWidgetRef = GetUpgradeWidget();
+			break;
+		case EWidgetType::PauseMenu:
+			CurrentWidgetRef = GetPauseMenuWidget();
+			break;
+		default:
+			CurrentWidgetRef = nullptr;
+			break;
+	}
+
+	if (CurrentWidgetRef != nullptr)
+		CurrentWidgetRef->EnableWidget(true);
 }
 
 UDP_UserWidgetBase* ADP_PlayerHUD::CreateWidgetHelper(const TSubclassOf<UDP_UserWidgetBase>& WidgetClass) const

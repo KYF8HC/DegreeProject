@@ -1,12 +1,7 @@
 ﻿#include "Core/DP_GameMode.h"
-
-#include "GameplayAbilitySpec.h"
 #include "Characters/Enemy/DP_EnemyCharacter.h"
-#include "Data/DP_UpgradeCardInfo.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Player/DP_PlayerController.h"
 
 ADP_GameMode::ADP_GameMode()
 {

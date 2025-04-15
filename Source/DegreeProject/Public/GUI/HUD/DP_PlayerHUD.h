@@ -16,6 +16,7 @@ UENUM(BlueprintType)
 enum class EWidgetType : uint8
 {
 	None,
+	MainMenu,
 	Overlay,
 	Upgrade,
 	PauseMenu
@@ -34,16 +35,15 @@ public:
 	UDP_WidgetController* GetUpgradeWidgetController(const FWidgetControllerParams& Params);
 
 	//Widget Getters
+	
+	UDP_UserWidgetBase* GetMainMenuWidget();
 	UDP_UserWidgetBase* GetOverlayWidget(const FWidgetControllerParams& Params = FWidgetControllerParams());
 	UDP_UserWidgetBase* GetUpgradeWidget(const FWidgetControllerParams& Params = FWidgetControllerParams());
 	UDP_UserWidgetBase* GetPauseMenuWidget();
 
-	FWidgetControllerParams& GetWidgetControllerParams() { return WidgetControllerParams; }
+	void ChangeWidget(EWidgetType WidgetType);
 
 protected:
-
-	UPROPERTY()
-	FWidgetControllerParams WidgetControllerParams;
 	
 	//Internal Helper functions
 	UDP_WidgetController* CreateWidgetController(const FWidgetControllerParams& Params, TSubclassOf<UDP_WidgetController> WidgetControllerClass);
@@ -51,6 +51,9 @@ protected:
 private:
 #pragma region "Widgets"
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UDP_UserWidgetBase> MainMenuWidgetClass{};
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UDP_UserWidgetBase> OverlayWidgetClass{};
 
@@ -61,6 +64,9 @@ private:
 	TSubclassOf<UDP_UserWidgetBase> PauseMenuWidgetClass{};
 
 	UPROPERTY()
+	TObjectPtr<UDP_UserWidgetBase> MainMenuWidgetRef{};
+	
+	UPROPERTY()
 	TObjectPtr<UDP_UserWidgetBase> OverlayWidgetRef{};
 
 	UPROPERTY()
@@ -68,6 +74,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UDP_UserWidgetBase> PauseMenuWidgetRef{};
+
+	UPROPERTY()
+	TObjectPtr<UDP_UserWidgetBase> CurrentWidgetRef{};
 
 #pragma endregion
 

@@ -1,6 +1,5 @@
 ﻿#include "Characters/DP_PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "Core/DP_GameMode.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
@@ -43,12 +42,11 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	//Init for client
 	PlayerControllerRef = Cast<ADP_PlayerController>(GetController());
 	InitAbilityActorInfo();
-	//ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
-	//PlayerHUD->InitOverlay(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
 }
 
 void ADP_PlayerCharacter::Begin()
 {
+	
 }
 
 
@@ -89,5 +87,7 @@ void ADP_PlayerCharacter::InitAbilityActorInfo()
 {
 	AbilitySystemComponentRef->InitAbilityActorInfo(this, this);
 	UE_LOG(LogTemp, Warning, TEXT("ADP_PlayerCharacter::InitAbilityActorInfo"));
-	Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->WidgetControllerParams = FWidgetControllerParams(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
+	ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
+	PlayerHUD->InitOverlay(PlayerControllerRef, AbilitySystemComponentRef, AttributeSetRef);
 }
+

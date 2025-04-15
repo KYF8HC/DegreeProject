@@ -1,11 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Events/DP_Event.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
-#include "GUI/WidgetController/DP_WidgetController.h"
 #include "DP_GameMode.generated.h"
 
 class UGameplayAbility;
@@ -25,11 +23,6 @@ class DEGREEPROJECT_API ADP_GameMode : public AGameModeBase, public IDP_Event
 public:
 
 	ADP_GameMode();
-
-
-	//TEMP!!!!!!!!!!!!!!!!!!!!!!!
-	UPROPERTY()
-	FWidgetControllerParams WidgetControllerParams;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UDP_CharacterClassInfo> CharacterClassInfo;

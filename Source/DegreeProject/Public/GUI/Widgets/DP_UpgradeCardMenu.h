@@ -21,6 +21,7 @@ public:
 	void GetCardsInfo(bool bFirstTime);
 
 	virtual void OnBegin(bool bFirstTime) override;
+	virtual void OnEnd() override;
 
 protected:
 
@@ -28,11 +29,8 @@ protected:
 	UFUNCTION()
 	void ChoseUpgrade(const FGuid& UniqueIdentifier, EUpgradeCardType CardType);
 	virtual void NativePreConstruct() override;
-
+	virtual void NativeConstruct() override;
 private:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCardMenu")
-	TSubclassOf<UDP_WidgetController> WidgetControllerClass{};
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCardMenu")
 	TArray<FUpgradeCardInfo> CardsInfo{};
