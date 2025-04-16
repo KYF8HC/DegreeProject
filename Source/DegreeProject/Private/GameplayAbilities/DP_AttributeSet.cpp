@@ -1,11 +1,13 @@
 #include "GameplayAbilities/DP_AttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "FDP_GameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/DP_PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/DP_PlayerController.h"
 
@@ -85,12 +87,42 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 				{
 					CombatInterface->Death();
 				}
+				SendExperienceEvent(Props);
 			}
 		}
-		
+
 		const bool bIsDodgedHit = UDP_AbilitySystemLibrary::IsDodgedHit(Props.EffectContextHandle);
 		const bool bIsCriticalHit = UDP_AbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
 		ShowFloatingText(Props, LocalIncomingDamage, bIsDodgedHit, bIsCriticalHit);
+	}
+
+	if (Data.EvaluatedData.Attribute == GetIncomingExperienceAttribute())
+	{
+		const float LocalIncomingExperience = GetIncomingExperience();
+		SetIncomingExperience(0.0f);
+
+		if (Props.SourceCharacter->Implements<UDP_PlayerInterface>())
+			IDP_PlayerInterface::Execute_AddToPlayerExperience(Props.SourceCharacter, LocalIncomingExperience);
+	}
+}
+
+
+void UDP_AttributeSet::SendExperienceEvent(const FEffectProperties& Props)
+{
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 TargetLevel = CombatInterface->GetCharacterLevel();
+		const ECharacterClass CharacterClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 ExperienceReward = UDP_AbilitySystemLibrary::GetExperienceRewardForClassAndLevel(
+			Props.TargetCharacter, CharacterClass, TargetLevel);
+
+		const FDP_GameplayTags GameplayTags = FDP_GameplayTags::Get();
+		FGameplayEventData Payload;
+		Payload.EventTag = GameplayTags.Attributes_Meta_IncomingExperience;
+		Payload.EventMagnitude = ExperienceReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter,
+		                                                         GameplayTags.Attributes_Meta_IncomingExperience,
+		                                                         Payload);
 	}
 }
 

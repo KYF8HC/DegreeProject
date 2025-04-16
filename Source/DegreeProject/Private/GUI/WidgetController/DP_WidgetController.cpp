@@ -3,6 +3,7 @@
 void UDP_WidgetController::SetWidgetControllerParams(const FWidgetControllerParams& Params)
 {
 	PlayerControllerRef = Params.PlayerController;
+	PlayerCharacterRef = Params.PlayerCharacter;
 	AbilitySystemComponentRef = Params.AbilitySystemComponent;
 	AttributeSetRef = Params.AttributeSet;
 }

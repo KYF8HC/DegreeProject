@@ -1,10 +1,7 @@
 #include "Characters/DP_BaseCharacter.h"
-
-#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DegreeProject/DegreeProject.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
-#include "GameplayAbilities/DP_AttributeSet.h"
 
 ADP_BaseCharacter::ADP_BaseCharacter()
 {
@@ -23,7 +20,42 @@ UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
 void ADP_BaseCharacter::Death()
 {
 	Destroy();
-	//Disolve();
+}
+
+void ADP_BaseCharacter::SetCharacterLevel(const int32 NewLevel)
+{
+	Level = NewLevel;
+	OnLevelChanged.Broadcast(Level);
+}
+
+void ADP_BaseCharacter::AddToLevel(const int32 Amount)
+{
+	Level += Amount;
+	if (Level < 1)
+		Level = 1;
+	OnLevelChanged.Broadcast(Level);
+}
+
+void ADP_BaseCharacter::SetExperiencePoints(const int32 NewExperiencePoints)
+{
+	ExperiencePoints = NewExperiencePoints;
+	OnExperiencePointsChanged.Broadcast(ExperiencePoints);
+}
+
+void ADP_BaseCharacter::AddToExperiencePoints(const int32 Amount)
+{
+	ExperiencePoints += Amount;
+	if (ExperiencePoints < 0)
+		ExperiencePoints = 0;
+
+	UE_LOG(LogTemp, Log, TEXT("Experience Points: %d"), ExperiencePoints);
+	
+	OnExperiencePointsChanged.Broadcast(ExperiencePoints);	
+}
+
+ECharacterClass ADP_BaseCharacter::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
 }
 
 void ADP_BaseCharacter::BeginPlay()
@@ -31,14 +63,4 @@ void ADP_BaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	UDP_AbilitySystemLibrary::GiveStartupAbilities(this, CharacterClass, AbilitySystemComponentRef);
 	UDP_AbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponentRef);
-}
-
-void ADP_BaseCharacter::Disolve()
-{
-	if (IsValid(DissolveMaterialInstanceRef))
-	{
-		UMaterialInstance* DynamicMaterialIns = UMaterialInstanceDynamic::Create(DissolveMaterialInstanceRef, this);
-		GetMesh()->SetMaterial(0, DynamicMaterialIns);
-		StartDisolveTimeline(DynamicMaterialIns);
-	}
 }

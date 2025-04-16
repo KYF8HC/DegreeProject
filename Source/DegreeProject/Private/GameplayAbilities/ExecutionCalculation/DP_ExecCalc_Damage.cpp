@@ -150,12 +150,12 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	//Armor penetration ignores a percentage of the target's armor
 	FRealCurve* ArmorPenCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(
 		FName("ArmorPenetrationCoeff"), FString());
-	const float ArmorPenCoeff = ArmorPenCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	const float ArmorPenCoeff = ArmorPenCurve->Eval(SourceCombatInterface->GetCharacterLevel());
 
 	//Armor reduces damage by a percentage
 	FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(
 		FName("EffectiveArmorCoeff"), FString());
-	const float EffectiveArmorCoeff = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	const float EffectiveArmorCoeff = EffectiveArmorCurve->Eval(TargetCombatInterface->GetCharacterLevel());
 
 	const float EffectiveArmor = TargetArmor * (100 - SourceArmorPen * ArmorPenCoeff) / 100;
 	Damage *= (100 - EffectiveArmor * EffectiveArmorCoeff) / 100;

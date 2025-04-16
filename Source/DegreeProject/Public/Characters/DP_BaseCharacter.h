@@ -7,9 +7,10 @@
 #include "Interaction/CombatInterface.h"
 #include "DP_BaseCharacter.generated.h"
 
-
 class UAttributeSet;
 class UAbilitySystemComponent;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterStatChanged, int32 /* Stat value*/);
 
 UCLASS(Abstract)
 class DEGREEPROJECT_API ADP_BaseCharacter : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -19,28 +20,46 @@ class DEGREEPROJECT_API ADP_BaseCharacter : public ACharacter, public IAbilitySy
 public:
 
 	ADP_BaseCharacter();
+
+	FOnCharacterStatChanged OnExperiencePointsChanged;
+	FOnCharacterStatChanged OnLevelChanged;
 	
 	//Getters and Setters
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSetRef; }
-	virtual int32 GetPlayerLevel() override { return Level; }
+	virtual int32 GetCharacterLevel() override { return Level; }
 	virtual FVector GetCombatSocketLocation() override { return  WeaponSocketComponentRef->GetComponentLocation(); }
 	virtual void Death() override;
 	virtual bool IsEnemy() override { return true; }
+
+	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
+	FORCEINLINE int32 GetExperiencePoints() const { return ExperiencePoints; }
+
+	void SetCharacterLevel(const int32 NewLevel);
+	void AddToLevel(const int32 Amount);
+	
+	void SetExperiencePoints(const int32 NewExperiencePoints);
+	void AddToExperiencePoints(const int32 Amount);
+	
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 protected:
+
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ability System")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponentRef{};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attribute Set")
 	TObjectPtr<UAttributeSet> AttributeSetRef{};
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USceneComponent> WeaponSocketComponentRef{};
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character Defaults")
 	int32 Level{1};
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character Defaults")
+	int32 ExperiencePoints{0};
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	ECharacterClass CharacterClass{ECharacterClass::Warrior};
 	
@@ -52,8 +71,4 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	void Disolve();
-
-	UFUNCTION(BlueprintImplementableEvent, Category="Visaul Effects")
-	void StartDisolveTimeline(UMaterialInstance* DynamicMaterialInstance);
 };

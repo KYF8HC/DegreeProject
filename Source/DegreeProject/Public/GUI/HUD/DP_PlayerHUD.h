@@ -28,8 +28,8 @@ class DEGREEPROJECT_API ADP_PlayerHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	void InitOverlay(APlayerController* PC, UAbilitySystemComponent* ASC, UAttributeSet* AS);
-
+	void InitOverlay(APlayerController* PC, ACharacter* PChar, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+	
 	//Widget Controller Getters
 	UDP_WidgetController* GetOverlayWidgetController(const FWidgetControllerParams& Params);
 	UDP_WidgetController* GetUpgradeWidgetController(const FWidgetControllerParams& Params);

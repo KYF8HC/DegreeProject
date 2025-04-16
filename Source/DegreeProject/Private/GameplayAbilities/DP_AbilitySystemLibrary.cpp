@@ -55,16 +55,39 @@ void UDP_AbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextO
 		ASC->GiveAbility(AbilitySpec);
 	}
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
-	for (TSubclassOf<UGameplayAbility> AbilityClass : DefaultInfo.StartupAbilities)
+	for (const FStartupAbilityInfo& StartupAbilityInfo : DefaultInfo.StartupAbilities)
 	{
 		ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
 		if (CombatInterface)
 		{
-			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetPlayerLevel());
-			ASC->GiveAbility(AbilitySpec);
+			if (StartupAbilityInfo.bShouldAutoActivate)
+			{
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(StartupAbilityInfo.AbilityClass, 1);
+				ASC->GiveAbilityAndActivateOnce(AbilitySpec);
+			}
+			else
+			{
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(StartupAbilityInfo.AbilityClass,
+				                                                        CombatInterface->GetCharacterLevel());
+				ASC->GiveAbility(AbilitySpec);
+			}
 		}
 	}
 }
+
+
+int32 UDP_AbilitySystemLibrary::GetExperienceRewardForClassAndLevel(const UObject* WorldContextObject,
+                                                                    ECharacterClass CharacterClass, int32 Level)
+{
+	UDP_CharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if (CharacterClassInfo == nullptr) return 0;
+
+	const FCharacterClassDefaultInfo Info = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	const float Reward = Info.ExperienceReward.GetValueAtLevel(Level);
+
+	return static_cast<int32>(Reward);
+}
+
 
 UDP_CharacterClassInfo* UDP_AbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {

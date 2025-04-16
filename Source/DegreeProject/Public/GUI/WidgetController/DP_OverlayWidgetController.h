@@ -17,18 +17,20 @@ class DEGREEPROJECT_API UDP_OverlayWidgetController : public UDP_WidgetControlle
 
 public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnAttributeChange OnHealthChange;
+	FOnAttributeChange OnHealthChange{};
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnAttributeChange OnMaxHealthChange;
+	FOnAttributeChange OnMaxHealthChange{};
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnAttributeChange OnAbilityResourceChange;
+	FOnAttributeChange OnAbilityResourceChange{};
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnAttributeChange OnMaxAbilityResourceChange;
+	FOnAttributeChange OnMaxAbilityResourceChange{};
 
-
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChange OnExperiencePercentageChange{};
+	
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 	virtual void InitializeWidgetController() override;
@@ -39,5 +41,7 @@ protected:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	void AbilityResourceChanged(const FOnAttributeChangeData& Data);
 	void MaxAbilityResourceChanged(const FOnAttributeChangeData& Data);
+	void OnExperiencePointsChanged(const int32 NewExperiencePoints) const;
+	void OnLevelChanged(const int32 NewLevel);
 
 };

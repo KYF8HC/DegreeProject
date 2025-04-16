@@ -147,6 +147,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, IncomingDamage)
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingExperience;
+	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, IncomingExperience)
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
@@ -214,5 +218,5 @@ private:
 	
 	void ShowFloatingText(FEffectProperties Props, float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const;
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
-
+	void SendExperienceEvent(const FEffectProperties& Props);
 };

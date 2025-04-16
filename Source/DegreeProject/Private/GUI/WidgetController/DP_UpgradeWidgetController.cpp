@@ -40,7 +40,7 @@ TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int
 			UGameplayAbility* Ability = Spec->Ability;
 
 			// Option 1: Get tags from the Ability directly
-			const FGameplayTagContainer& AbilityTags = Ability->AbilityTags;
+			const FGameplayTagContainer& AbilityTags = Ability->GetAssetTags();
 
 			// Option 2: Get Activation Owned Tags (if that's what you want)
 			// const FGameplayTagContainer& ActivationTags = Spec->DynamicAbilityTags;

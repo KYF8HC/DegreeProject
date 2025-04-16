@@ -63,14 +63,23 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_DodgeChance = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.DodgeChance"),
 		FString("Increases Dodge Chance"));
+	
+	/*
+	 * Secondary Attributes
+	 */
 
-	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage"),
-		FString("Damage"));
+	GameplayTags.Attributes_Meta_IncomingExperience = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Meta.IncomingExperience"),
+		FString("Incoming Experience Meta Attribute"));
 
 	/*
 	 * Damage Types
 	 */
+	
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("Damage"));
+	
 	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage.Physical"),
 		FString("Physical Damage Type"));

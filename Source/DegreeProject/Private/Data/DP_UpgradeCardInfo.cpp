@@ -1,7 +1,5 @@
 ﻿#include "Data/DP_UpgradeCardInfo.h"
 #include "Abilities/GameplayAbility.h"
-#include "Engine/AssetManager.h"
-#include "Engine/StreamableManager.h"
 
 FUpgradeCardInfo UDP_UpgradeCardInfo::FindUpgradeCardInfoForTag(const FGameplayTag& WeaponTag, bool bLogNotFound) const
 {

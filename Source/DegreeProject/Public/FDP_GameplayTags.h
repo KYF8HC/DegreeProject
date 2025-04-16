@@ -29,6 +29,8 @@ public:
 	FGameplayTag Attributes_Secondary_CriticalStrikeDamage;
 	FGameplayTag Attributes_Secondary_DodgeChance;
 
+	FGameplayTag Attributes_Meta_IncomingExperience;
+	
 	FGameplayTag Damage;
 	FGameplayTag Damage_Magic_Fire;
 	FGameplayTag Damage_Magic_Frost;

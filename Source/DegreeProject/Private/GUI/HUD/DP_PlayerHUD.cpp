@@ -2,7 +2,7 @@
 #include "GUI/WidgetController/DP_OverlayWidgetController.h"
 #include "GUI/Widgets/DP_UserWidgetBase.h"
 
-void ADP_PlayerHUD::InitOverlay(APlayerController* PC, UAbilitySystemComponent* ASC,
+void ADP_PlayerHUD::InitOverlay(APlayerController* PC, ACharacter* PChar, UAbilitySystemComponent* ASC,
                                 UAttributeSet* AS)
 {
 	checkf(OverlayWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: OverlayWidgetClass is not set in %s"), *GetName());
@@ -13,7 +13,7 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, UAbilitySystemComponent* 
 	       TEXT("ADP_PlayerHUD::InitOverlay: UpgradeWidgetControllerClass is not set in %s"), *GetName());
 	checkf(PauseMenuWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: PauseMenuWidgetClass is not set in %s"), *GetName());
 
-	FWidgetControllerParams Params = FWidgetControllerParams(PC, ASC, AS);
+	FWidgetControllerParams Params = FWidgetControllerParams(PC, PChar, ASC, AS);
 	
 	GetOverlayWidget(Params)->SetPlayerHUDRef(this);
 	GetUpgradeWidget(Params)->SetPlayerHUDRef(this);
