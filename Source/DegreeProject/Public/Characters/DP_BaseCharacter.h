@@ -27,12 +27,11 @@ public:
 	//Getters and Setters
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSetRef; }
-	virtual int32 GetCharacterLevel() override { return Level; }
+	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
 	virtual FVector GetCombatSocketLocation() override { return  WeaponSocketComponentRef->GetComponentLocation(); }
 	virtual void Death() override;
 	virtual bool IsEnemy() override { return true; }
 
-	FORCEINLINE int32 GetCharacterLevel() const { return Level; }
 	FORCEINLINE int32 GetExperiencePoints() const { return ExperiencePoints; }
 
 	void SetCharacterLevel(const int32 NewLevel);

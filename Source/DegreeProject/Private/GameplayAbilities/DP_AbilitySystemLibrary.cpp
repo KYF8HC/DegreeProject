@@ -57,8 +57,7 @@ void UDP_AbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextO
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 	for (const FStartupAbilityInfo& StartupAbilityInfo : DefaultInfo.StartupAbilities)
 	{
-		ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
-		if (CombatInterface)
+		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
 		{
 			if (StartupAbilityInfo.bShouldAutoActivate)
 			{
@@ -68,7 +67,9 @@ void UDP_AbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextO
 			else
 			{
 				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(StartupAbilityInfo.AbilityClass,
-				                                                        CombatInterface->GetCharacterLevel());
+				                                                        ICombatInterface::Execute_GetCharacterLevel(
+					                                                        ASC->GetAvatarActor()));
+
 				ASC->GiveAbility(AbilitySpec);
 			}
 		}

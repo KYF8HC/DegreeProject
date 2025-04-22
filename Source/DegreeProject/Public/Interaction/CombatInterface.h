@@ -16,7 +16,10 @@ class DEGREEPROJECT_API ICombatInterface
 	GENERATED_BODY()
 	
 public:
-	virtual int32 GetCharacterLevel() = 0;
+
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetCharacterLevel();
+	
 	virtual FVector GetCombatSocketLocation() = 0;
 	virtual void Death() = 0;
 	virtual bool IsEnemy() = 0;

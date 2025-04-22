@@ -8,7 +8,6 @@
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/DP_PlayerInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/DP_PlayerController.h"
 
 UDP_AttributeSet::UDP_AttributeSet()
@@ -102,16 +101,18 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		SetIncomingExperience(0.0f);
 
 		if (Props.SourceCharacter->Implements<UDP_PlayerInterface>())
+		{
 			IDP_PlayerInterface::Execute_AddToPlayerExperience(Props.SourceCharacter, LocalIncomingExperience);
+		}
 	}
 }
 
 
 void UDP_AttributeSet::SendExperienceEvent(const FEffectProperties& Props)
 {
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	if (Props.TargetCharacter->Implements<UCombatInterface>())
 	{
-		const int32 TargetLevel = CombatInterface->GetCharacterLevel();
+		const int32 TargetLevel = ICombatInterface::Execute_GetCharacterLevel(Props.TargetCharacter);
 		const ECharacterClass CharacterClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
 		const int32 ExperienceReward = UDP_AbilitySystemLibrary::GetExperienceRewardForClassAndLevel(
 			Props.TargetCharacter, CharacterClass, TargetLevel);

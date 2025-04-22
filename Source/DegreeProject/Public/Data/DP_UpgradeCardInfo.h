@@ -11,6 +11,15 @@ class UGameplayAbility;
 class UTexture2D;
 
 UENUM(BlueprintType)
+enum class ECardRarity : uint8
+{
+	Common,
+	Rare,
+	Epic,
+	Legendary
+};
+
+UENUM(BlueprintType)
 enum class EUpgradeCardType : uint8
 {
 	Weapon,
@@ -35,6 +44,9 @@ struct FUpgradeCardInfo
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EUpgradeCardType UpgradeCardType{EUpgradeCardType::None};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ECardRarity CardRarity{ECardRarity::Common};
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftClassPtr<UGameplayAbility> AbilityClass{};
@@ -60,6 +72,9 @@ struct FUpgradeCardWidgetProperties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EUpgradeCardType UpgradeCardType{EUpgradeCardType::None};
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ECardRarity CardRarity{ECardRarity::Common};
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FGuid UpgradeCardGuid{};
 };
@@ -76,7 +91,7 @@ public:
 	FUpgradeCardInfo FindUpgradeCardInfoForTag(const FGameplayTag& WeaponTag, bool bLogNotFound) const;
 	void LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const FGameplayTag&, const TSubclassOf<UGameplayAbility>&)> Callback);
 	void LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback);
-	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly = false) const;
+	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(const int NumberOfCards, const int PlayerLevel, const FGameplayTagContainer& OwnedWeapons) const;
 
 	
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;

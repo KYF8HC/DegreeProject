@@ -1,7 +1,7 @@
 ﻿#include "GUI/Widgets/DP_MainMenuWidget.h"
 #include "DP_MainEventHandlerSubsystem.h"
+#include "Core/DP_GameMode.h"
 #include "Core/Events/DP_EventHandler.h"
-#include "GUI/HUD/DP_PlayerHUD.h"
 #include "GUI/Widgets/DP_UpgradeCardMenu.h"
 
 void UDP_MainMenuWidget::NativeConstruct()
@@ -15,14 +15,13 @@ void UDP_MainMenuWidget::NativeConstruct()
 
 void UDP_MainMenuWidget::OnStartGame()
 {
-	PlayerHUDRef->ChangeWidget(EWidgetType::Upgrade);
-	//CreateAndPushEventWidget<UDP_UpgradeCardMenu>(GetGameInstance(), UpgradeWidgetClass,TEXT("UpgradeCardMenu"));
+	GetGameInstance()->GetSubsystem<UDP_MainEventHandlerSubsystem>()->GetMainEventHandler()->PushEvent
+		(Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode()));
 }
 
 void UDP_MainMenuWidget::OnBegin(bool bFirstTime)
 {
 	Super::OnBegin(bFirstTime);
-	//EnableWidget(true);
 }
 
 void UDP_MainMenuWidget::OnEnd()

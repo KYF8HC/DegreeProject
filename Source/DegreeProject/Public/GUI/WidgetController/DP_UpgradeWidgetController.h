@@ -16,10 +16,11 @@ class DEGREEPROJECT_API UDP_UpgradeWidgetController : public UDP_WidgetControlle
 
 public:
 	void GrantUpgrade(FGuid UniqueIdentifier, EUpgradeCardType CardType);
-	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly = false) const;
+	TArray<FUpgradeCardInfo> GetNumberOfUniqueCards(int NumberOfCards) const;
 	virtual void InitializeWidgetController() override;
 
 protected:
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon Info")
 	TObjectPtr<UDP_UpgradeCardInfo> UpgradeCardInfo{};
 

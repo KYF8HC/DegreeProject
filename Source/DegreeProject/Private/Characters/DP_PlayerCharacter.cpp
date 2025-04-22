@@ -1,5 +1,6 @@
 ﻿#include "Characters/DP_PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Data/DP_LevelUpInfo.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "GameplayAbilities/DP_AttributeSet.h"
@@ -44,14 +45,41 @@ void ADP_PlayerCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+bool ADP_PlayerCharacter::CanLevelUp(int32 InExperiencePoints)
+{
+	return LevelUpInfo->GetLevelBasedOnExp(InExperiencePoints) > Level;
+}
+
+void ADP_PlayerCharacter::GrantWeaponTag_Implementation(FGameplayTag WeaponTag)
+{
+	if (WeaponTag.IsValid())
+		OwnedWeapons.AddTag(WeaponTag);
+}
+
 void ADP_PlayerCharacter::AddToPlayerExperience_Implementation(int32 ExperienceAmount)
 {
+	const int32 TempExperience = ExperiencePoints + ExperienceAmount;
+
+	while (CanLevelUp(TempExperience))
+	{
+		UE_LOG(LogTemp, Display, TEXT("Level: %d, TempExperience: %d"), Level, TempExperience);
+		AddToLevel(1);
+	}
+
 	AddToExperiencePoints(ExperienceAmount);
+}
+
+void ADP_PlayerCharacter::LevelUp_Implementation()
+{
+}
+
+int32 ADP_PlayerCharacter::GetLevelBasedOnExp_Implementation(int32 InExperiencePoints)
+{
+	return LevelUpInfo->GetLevelBasedOnExp(InExperiencePoints);
 }
 
 void ADP_PlayerCharacter::Begin()
 {
-	
 }
 
 
@@ -97,4 +125,3 @@ void ADP_PlayerCharacter::InitAbilityActorInfo()
 	ADP_PlayerHUD* PlayerHUD = Cast<ADP_PlayerHUD>(PlayerControllerRef->GetHUD());
 	PlayerHUD->InitOverlay(PlayerControllerRef, this, AbilitySystemComponentRef, AttributeSetRef);
 }
-

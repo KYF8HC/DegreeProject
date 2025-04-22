@@ -5,19 +5,21 @@
 
 ADP_GameMode::ADP_GameMode()
 {
-	
 }
 
 void ADP_GameMode::OnBegin(bool bFirstTime)
 {
 	OnBeginDelegate.Broadcast(bFirstTime);
 
+	if (bFirstTime)
+		return;
+	
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ADP_GameMode::SpawnBotTimerElapsed,
-									SpawnTimerInterval, true);
+	                                SpawnTimerInterval, true);
 }
 
 void ADP_GameMode::OnBotQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-										   EEnvQueryStatus::Type QueryStatus)
+                                      EEnvQueryStatus::Type QueryStatus)
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
@@ -42,7 +44,7 @@ void ADP_GameMode::SpawnBotTimerElapsed()
 {
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance
 		= UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this,
-										EEnvQueryRunMode::RandomBest5Pct, nullptr);
+		                                EEnvQueryRunMode::RandomBest5Pct, nullptr);
 
 	if (ensureMsgf(QueryInstance, TEXT("ADP_GameMode::SpawnBotTimerElapsed: QueryInstance is nullptr")))
 		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ADP_GameMode::OnBotQueryFinished);

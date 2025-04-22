@@ -31,8 +31,8 @@ public:
 	void InitOverlay(APlayerController* PC, ACharacter* PChar, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 	
 	//Widget Controller Getters
-	UDP_WidgetController* GetOverlayWidgetController(const FWidgetControllerParams& Params);
-	UDP_WidgetController* GetUpgradeWidgetController(const FWidgetControllerParams& Params);
+	UDP_WidgetController* GetOverlayWidgetController(const FWidgetControllerParams& Params = FWidgetControllerParams());
+	UDP_WidgetController* GetUpgradeWidgetController(const FWidgetControllerParams& Params = FWidgetControllerParams());
 
 	//Widget Getters
 	
@@ -46,8 +46,14 @@ public:
 protected:
 	
 	//Internal Helper functions
+	void LevelUp(int NewLevel);
 	UDP_WidgetController* CreateWidgetController(const FWidgetControllerParams& Params, TSubclassOf<UDP_WidgetController> WidgetControllerClass);
 	UDP_UserWidgetBase*  CreateWidgetHelper(const TSubclassOf<UDP_UserWidgetBase>& WidgetClass) const;
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void GameModeBegin(bool bFirstTime);
+
 private:
 #pragma region "Widgets"
 
@@ -69,8 +75,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UDP_UserWidgetBase> OverlayWidgetRef{};
 
-	UPROPERTY()
-	TObjectPtr<UDP_UserWidgetBase> UpgradeWidgetRef{};
 
 	UPROPERTY()
 	TObjectPtr<UDP_UserWidgetBase> PauseMenuWidgetRef{};

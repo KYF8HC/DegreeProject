@@ -1,6 +1,9 @@
 ﻿#include "GUI/HUD/DP_PlayerHUD.h"
+#include "Characters/DP_BaseCharacter.h"
+#include "Core/DP_GameMode.h"
 #include "GUI/WidgetController/DP_OverlayWidgetController.h"
 #include "GUI/Widgets/DP_UserWidgetBase.h"
+
 
 void ADP_PlayerHUD::InitOverlay(APlayerController* PC, ACharacter* PChar, UAbilitySystemComponent* ASC,
                                 UAttributeSet* AS)
@@ -14,16 +17,23 @@ void ADP_PlayerHUD::InitOverlay(APlayerController* PC, ACharacter* PChar, UAbili
 	checkf(PauseMenuWidgetClass, TEXT("ADP_PlayerHUD::InitOverlay: PauseMenuWidgetClass is not set in %s"), *GetName());
 
 	FWidgetControllerParams Params = FWidgetControllerParams(PC, PChar, ASC, AS);
-	
+
+	Cast<ADP_BaseCharacter>(PChar)->OnLevelChanged.AddUObject(this, &ADP_PlayerHUD::LevelUp);
+
 	GetOverlayWidget(Params)->SetPlayerHUDRef(this);
-	GetUpgradeWidget(Params)->SetPlayerHUDRef(this);
 	GetPauseMenuWidget()->SetPlayerHUDRef(this);
 	GetMainMenuWidget()->SetPlayerHUDRef(this);
-	
+
+	GetUpgradeWidgetController(Params);
+
 	CurrentWidgetRef = MainMenuWidgetRef;
 	CurrentWidgetRef->EnableWidget(true);
 }
 
+void ADP_PlayerHUD::LevelUp(int NewLevel)
+{
+	ChangeWidget(EWidgetType::Upgrade);
+}
 
 #pragma region "Widget Getters"
 UDP_UserWidgetBase* ADP_PlayerHUD::GetOverlayWidget(const FWidgetControllerParams& Params)
@@ -39,12 +49,9 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetOverlayWidget(const FWidgetControllerParam
 
 UDP_UserWidgetBase* ADP_PlayerHUD::GetUpgradeWidget(const FWidgetControllerParams& Params)
 {
-	if (UpgradeWidgetRef == nullptr)
-	{
-		UpgradeWidgetRef = CreateWidgetHelper(UpgradeWidgetClass);
-		UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController(Params));
-	}
-
+	UDP_UserWidgetBase* UpgradeWidgetRef = CreateWidgetHelper(UpgradeWidgetClass);
+	UpgradeWidgetRef->SetWidgetController(GetUpgradeWidgetController());
+	UpgradeWidgetRef->SetPlayerHUDRef(this);
 	return UpgradeWidgetRef;
 }
 
@@ -67,27 +74,26 @@ UDP_UserWidgetBase* ADP_PlayerHUD::GetPauseMenuWidget()
 
 void ADP_PlayerHUD::ChangeWidget(EWidgetType WidgetType)
 {
-
 	if (CurrentWidgetRef != nullptr)
 		CurrentWidgetRef->EnableWidget(false);
-	
+
 	switch (WidgetType)
 	{
-		case EWidgetType::MainMenu:
-			CurrentWidgetRef = GetMainMenuWidget();
-			break;
-		case EWidgetType::Overlay:
-			CurrentWidgetRef = GetOverlayWidget();
-			break;
-		case EWidgetType::Upgrade:
-			CurrentWidgetRef = GetUpgradeWidget();
-			break;
-		case EWidgetType::PauseMenu:
-			CurrentWidgetRef = GetPauseMenuWidget();
-			break;
-		default:
-			CurrentWidgetRef = nullptr;
-			break;
+	case EWidgetType::MainMenu:
+		CurrentWidgetRef = GetMainMenuWidget();
+		break;
+	case EWidgetType::Overlay:
+		CurrentWidgetRef = GetOverlayWidget();
+		break;
+	case EWidgetType::Upgrade:
+		CurrentWidgetRef = GetUpgradeWidget();
+		break;
+	case EWidgetType::PauseMenu:
+		CurrentWidgetRef = GetPauseMenuWidget();
+		break;
+	default:
+		CurrentWidgetRef = nullptr;
+		break;
 	}
 
 	if (CurrentWidgetRef != nullptr)
@@ -100,6 +106,24 @@ UDP_UserWidgetBase* ADP_PlayerHUD::CreateWidgetHelper(const TSubclassOf<UDP_User
 
 	UDP_UserWidgetBase* UserWidget = CreateWidget<UDP_UserWidgetBase>(GetWorld(), WidgetClass);
 	return UserWidget;
+}
+
+void ADP_PlayerHUD::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->OnBeginDelegate.AddDynamic(this, &ADP_PlayerHUD::GameModeBegin);
+}
+
+void ADP_PlayerHUD::GameModeBegin(bool bFirstTime)
+{
+	if (bFirstTime)
+		ChangeWidget(EWidgetType::Upgrade);
+	else
+	{
+		ChangeWidget(EWidgetType::Overlay);
+		GetOwningPlayerController()->SetPause(false);
+	}
 }
 
 #pragma endregion

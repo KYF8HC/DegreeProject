@@ -68,7 +68,7 @@ void UDP_OverlayWidgetController::OnExperiencePointsChanged(const int32 NewExper
 	const ADP_PlayerCharacter* PlayerCharacter = CastChecked<ADP_PlayerCharacter>(PlayerCharacterRef);
 	const UDP_LevelUpInfo* LevelUpInfo = PlayerCharacter->LevelUpInfo;
 
-	const int32 Level = LevelUpInfo->GetLevelBasedOnExp(NewExperiencePoints);
+	const int32 Level = LevelUpInfo->GetLevelBasedOnExp(NewExperiencePoints) +	1;
 	const int32 MaxLevel = LevelUpInfo->LevelUpInfoArray.Num();
 
 	if (Level == 1)

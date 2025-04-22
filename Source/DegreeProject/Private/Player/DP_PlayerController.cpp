@@ -53,6 +53,9 @@ void ADP_PlayerController::SetCanReceiveInput(bool bCanReceive)
 
 void ADP_PlayerController::OnBegin(bool bFirstTime)
 {
+	if (bFirstTime)
+		return;
+	
 	OnBeginClient();
 	PlayerCharacterRef->Begin();
 }
@@ -82,8 +85,7 @@ void ADP_PlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	Cast<ADP_GameMode>(UGameplayStatics::GetGameMode(this))->OnBeginDelegate.AddDynamic(this, &ADP_PlayerController::OnBegin);
-
+	Cast<ADP_GameMode>(GetWorld()->GetAuthGameMode())->OnBeginDelegate.AddDynamic(this, &ADP_PlayerController::OnBegin);
 	if (IsLocalController())
 	{
 		SetupController(aPawn);

@@ -19,7 +19,9 @@ FUpgradeCardInfo UDP_UpgradeCardInfo::FindUpgradeCardInfoForTag(const FGameplayT
 	return FUpgradeCardInfo();
 }
 
-void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier, TFunction<void(const FGameplayTag&, const TSubclassOf<UGameplayAbility>&)> Callback)
+void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier,
+                                                     TFunction<void(const FGameplayTag&,
+                                                                    const TSubclassOf<UGameplayAbility>&)> Callback)
 {
 	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
 	{
@@ -27,7 +29,7 @@ void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifi
 		{
 			TSoftClassPtr<UGameplayAbility> SoftClass = UpgradeCardInfo.AbilityClass;
 			FGameplayTag WeaponTag = UpgradeCardInfo.AbilityTag;
-			
+
 			CancelAsyncLoading();
 			AsyncLoad(SoftClass, [WeaponTag, SoftClass, Callback]()
 			{
@@ -45,14 +47,14 @@ void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifi
 }
 
 void UDP_UpgradeCardInfo::LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifier,
-	TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback)
+                                                     TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback)
 {
 	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
 	{
 		if (UpgradeCardInfo.UpgradeCardGuid == UniqueIdentifier)
 		{
 			TSoftClassPtr<UGameplayEffect> SoftClass = UpgradeCardInfo.EffectClass;
-			
+
 			CancelAsyncLoading();
 			AsyncLoad(SoftClass, [ SoftClass, Callback]()
 			{
@@ -69,7 +71,8 @@ void UDP_UpgradeCardInfo::LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifi
 	Callback(nullptr);
 }
 
-TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly) const
+TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(const int NumberOfCards, const int PlayerLevel,
+                                                                     const FGameplayTagContainer& OwnedWeapons) const
 {
 	TArray<FUpgradeCardInfo> UniqueCards;
 	if (UpgradeCardInfoArray.Num() < 3)
@@ -77,47 +80,42 @@ TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(int NumberO
 		UniqueCards = UpgradeCardInfoArray;
 	}
 
-	bWeaponsOnly = true;
-	
-	if (bWeaponsOnly)
-	{
-		TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
-		ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
+	TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
+	ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
 
-		int8 Count = 0;
-		for (const FUpgradeCardInfo& Info : ShuffledArray)
+	int8 Count = 0;
+	for (const FUpgradeCardInfo& Info : ShuffledArray)
+	{
+		if (Info.UpgradeCardType == EUpgradeCardType::Weapon)
 		{
-			if (Info.UpgradeCardType == EUpgradeCardType::Weapon)
-			{
-				UniqueCards.Add(Info);
-				Count++;
-			}
-			if (Count >= NumberOfCards)
-			{
-				break;
-			}
+			UniqueCards.Add(Info);
+			Count++;
+		}
+		if (Count >= NumberOfCards)
+		{
+			break;
 		}
 	}
-	
-	else
-	{
-		TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
-		ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
 
-		int8 Count = 0;
-		for (const FUpgradeCardInfo& Info : ShuffledArray)
-		{
-			if (Info.UpgradeCardType == EUpgradeCardType::Effect)
-			{
-				UniqueCards.Add(Info);
-				Count++;
-			}
-			if (Count >= NumberOfCards)
-			{
-				break;
-			}
-		}
-	}
+	//if (false)
+	//{
+	//	TArray<FUpgradeCardInfo> ShuffledArray = UpgradeCardInfoArray;
+	//	ShuffledArray.Sort([](const FUpgradeCardInfo&, const FUpgradeCardInfo&) { return FMath::RandBool(); });
+
+	//	int8 Count = 0;
+	//	for (const FUpgradeCardInfo& Info : ShuffledArray)
+	//	{
+	//		if (Info.UpgradeCardType == EUpgradeCardType::Effect)
+	//		{
+	//			UniqueCards.Add(Info);
+	//			Count++;
+	//		}
+	//		if (Count >= NumberOfCards)
+	//		{
+	//			break;
+	//		}
+	//	}
+	//}
 	return UniqueCards;
 }
 

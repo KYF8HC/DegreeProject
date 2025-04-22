@@ -4,6 +4,9 @@
 #include "UObject/Interface.h"
 #include "DP_PlayerInterface.generated.h"
 
+struct FGameplayTagContainer;
+struct FGameplayTag;
+
 UINTERFACE()
 class UDP_PlayerInterface : public UInterface
 {
@@ -17,5 +20,20 @@ class DEGREEPROJECT_API IDP_PlayerInterface
 public:
 
 	UFUNCTION(BlueprintNativeEvent)
+	FGameplayTagContainer GetOwnedWeapons() const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void GrantWeaponTag(FGameplayTag WeaponTag);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetLevelBasedOnExp(int32 InExperiencePoints);
+	
+	UFUNCTION(BlueprintNativeEvent)
 	void AddToPlayerExperience(int32 ExperienceAmount);
+
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetPlayerExperience() const;
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void LevelUp();
 };

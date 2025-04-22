@@ -20,40 +20,46 @@ class DEGREEPROJECT_API ADP_PlayerCharacter : public ADP_BaseCharacter, public I
 public:
 	ADP_PlayerCharacter();
 
-	#pragma region Ability System
+#pragma region Ability System
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="GAS | Level")
 	TObjectPtr<UDP_LevelUpInfo> LevelUpInfo{};
-	
+
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	
-	#pragma endregion
 
+#pragma endregion
+
+#pragma region Player Interface
+	bool CanLevelUp(int32 InExperiencePoints);
 	virtual void AddToPlayerExperience_Implementation(int32 ExperienceAmount) override;
+	virtual void LevelUp_Implementation() override;
+	virtual int32 GetPlayerExperience_Implementation() const override { return ExperiencePoints; }
+	virtual int32 GetLevelBasedOnExp_Implementation(int32 InExperiencePoints) override;
+	virtual void GrantWeaponTag_Implementation(FGameplayTag WeaponTag) override;
+	FORCEINLINE virtual FGameplayTagContainer GetOwnedWeapons_Implementation() const override { return OwnedWeapons; }
+#pragma endregion
 
-	
 	void Begin();
 	void HandleMove(const FVector2D& InputAxisVector);
 	void HandleLook(const FVector2D& InputAxisVector);
 	virtual bool IsEnemy() override { return false; }
-	
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Death() override;
-private:
 
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "GAS", meta = (AllowPrivateAccess = "true"))
-	FGameplayTag StartWeaponTag{};
-	
+	FGameplayTagContainer OwnedWeapons{};
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArmComponentRef{};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerCamera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponentRef{};
-	
+
 	UPROPERTY()
 	TObjectPtr<ADP_PlayerController> PlayerControllerRef{};
-	
-	void InitAbilityActorInfo();
 
+	void InitAbilityActorInfo();
 };

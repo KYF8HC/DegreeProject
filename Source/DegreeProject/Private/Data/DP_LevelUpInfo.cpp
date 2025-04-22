@@ -2,7 +2,7 @@
 
 int32 UDP_LevelUpInfo::GetLevelBasedOnExp(int ExperiencePoints) const
 {
-	int32 Level = 1;
+	int32 Level = 0;
 
 	for (const auto& LevelUpInfo : LevelUpInfoArray)
 	{

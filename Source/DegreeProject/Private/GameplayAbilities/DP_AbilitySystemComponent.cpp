@@ -1,11 +1,16 @@
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
 #include "FDP_GameplayTags.h"
+#include "Characters/DP_PlayerCharacter.h"
 
 void UDP_AbilitySystemComponent::GiveWeaponToPlayerByTag(const FGameplayTag& WeaponTag,
-                                                  const TSubclassOf<UGameplayAbility>& LoadedAbility)
+                                                         const TSubclassOf<UGameplayAbility>& LoadedAbility)
 {
 	GiveWeaponPlayByTagInternal(LoadedAbility);
 	BindAbilityCooldown(WeaponTag);
+
+	
+	if (GetAvatarActor()->Implements<UDP_PlayerInterface>())
+		IDP_PlayerInterface::Execute_GrantWeaponTag(GetAvatarActor(), WeaponTag);
 }
 
 void UDP_AbilitySystemComponent::GiveWeaponPlayByTagInternal(const TSubclassOf<UGameplayAbility>& AbilityClass)

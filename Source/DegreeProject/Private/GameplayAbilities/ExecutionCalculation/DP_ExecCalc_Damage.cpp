@@ -19,6 +19,7 @@ struct DP_DamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance)
 
 	friend static DP_DamageStatics& DamageStatics();
+
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& GetTagsToCaptureDef()
 	{
 		if (TagsToCaptureDefs.IsEmpty())
@@ -37,10 +38,11 @@ private:
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, FireResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, FrostResistance, Target, false);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, LightningResistance, Target, false);	
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UDP_AttributeSet, LightningResistance, Target, false);
 	}
 
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
+
 	void InitMap()
 	{
 		const FDP_GameplayTags& Tags = FDP_GameplayTags::Get();
@@ -83,8 +85,13 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+	int32 SourceCharacterLevel = 1;
+	if (SourceAvatar->Implements<UCombatInterface>())
+		SourceCharacterLevel = ICombatInterface::Execute_GetCharacterLevel(SourceAvatar);
+
+	int32 TargetCharacterLevel = 1;
+	if (TargetAvatar->Implements<UCombatInterface>())
+		TargetCharacterLevel = ICombatInterface::Execute_GetCharacterLevel(TargetAvatar);
 
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -110,14 +117,15 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 		checkf(DamageStatics().GetTagsToCaptureDef().Contains(ResistanceTypeTag),
 		       TEXT("UDP_ExecCalc_Damage::Execute_Implementation: TagsToCaptureDefs does not contain Tag: [%s]"),
 		       *ResistanceTypeTag.ToString());
-		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().GetTagsToCaptureDef()[ResistanceTypeTag];
-		
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().GetTagsToCaptureDef()[
+			ResistanceTypeTag];
+
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false, 0.0f);
-		
+
 		float ResistanceValue = 0.0f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParams, ResistanceValue);
 		ResistanceValue = FMath::Clamp(ResistanceValue, 0.0f, 100.0f);
-		
+
 		DamageTypeValue *= (100.0f - ResistanceValue) / 100.0f;
 		Damage += DamageTypeValue;
 	}
@@ -150,12 +158,12 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	//Armor penetration ignores a percentage of the target's armor
 	FRealCurve* ArmorPenCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(
 		FName("ArmorPenetrationCoeff"), FString());
-	const float ArmorPenCoeff = ArmorPenCurve->Eval(SourceCombatInterface->GetCharacterLevel());
+	const float ArmorPenCoeff = ArmorPenCurve->Eval(SourceCharacterLevel);
 
 	//Armor reduces damage by a percentage
 	FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(
 		FName("EffectiveArmorCoeff"), FString());
-	const float EffectiveArmorCoeff = EffectiveArmorCurve->Eval(TargetCombatInterface->GetCharacterLevel());
+	const float EffectiveArmorCoeff = EffectiveArmorCurve->Eval(TargetCharacterLevel);
 
 	const float EffectiveArmor = TargetArmor * (100 - SourceArmorPen * ArmorPenCoeff) / 100;
 	Damage *= (100 - EffectiveArmor * EffectiveArmorCoeff) / 100;
@@ -175,7 +183,7 @@ void UDP_ExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExec
 	UDP_AbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bIsCriticalHit);
 
 	Damage = bIsCriticalHit ? CriticalStrike : Damage;
-	
+
 	const FGameplayModifierEvaluatedData EvaluatedData(UDP_AttributeSet::GetIncomingDamageAttribute(),
 	                                                   EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);

@@ -18,7 +18,7 @@ class DEGREEPROJECT_API UDP_UpgradeCardMenu : public UDP_EventUserWidgetBase
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "UpgradeCardMenu")
-	void GetCardsInfo(bool bFirstTime);
+	void GetCardsInfo();
 
 	virtual void OnBegin(bool bFirstTime) override;
 	virtual void OnEnd() override;

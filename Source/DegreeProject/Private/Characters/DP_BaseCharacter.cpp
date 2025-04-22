@@ -33,6 +33,9 @@ void ADP_BaseCharacter::AddToLevel(const int32 Amount)
 	Level += Amount;
 	if (Level < 1)
 		Level = 1;
+
+	UE_LOG(LogTemp, Display, TEXT("Level = %d"), Level);
+	
 	OnLevelChanged.Broadcast(Level);
 }
 
@@ -47,8 +50,6 @@ void ADP_BaseCharacter::AddToExperiencePoints(const int32 Amount)
 	ExperiencePoints += Amount;
 	if (ExperiencePoints < 0)
 		ExperiencePoints = 0;
-
-	UE_LOG(LogTemp, Log, TEXT("Experience Points: %d"), ExperiencePoints);
 	
 	OnExperiencePointsChanged.Broadcast(ExperiencePoints);	
 }

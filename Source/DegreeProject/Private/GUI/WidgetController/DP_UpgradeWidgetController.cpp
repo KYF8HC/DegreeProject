@@ -2,6 +2,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Data/DP_UpgradeCardInfo.h"
 #include "GameplayAbilities/DP_AbilitySystemComponent.h"
+#include "Interaction/CombatInterface.h"
+#include "Interaction/DP_PlayerInterface.h"
 
 void UDP_UpgradeWidgetController::GrantUpgrade(FGuid UniqueIdentifier, EUpgradeCardType CardType)
 {
@@ -27,33 +29,22 @@ void UDP_UpgradeWidgetController::GrantUpgrade(FGuid UniqueIdentifier, EUpgradeC
 	}
 }
 
-TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int NumberOfCards, bool bWeaponsOnly) const
+TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int NumberOfCards) const
 {
-	TArray<FGameplayAbilitySpecHandle> AbilityHandles;
-	AbilitySystemComponentRef->GetAllAbilities(AbilityHandles);
-
-	for (const FGameplayAbilitySpecHandle& AbilityHandle : AbilityHandles)
+	int32 PlayerLevel = 1;
+	FGameplayTagContainer OwnedWeapons;
+	
+	if (PlayerCharacterRef->Implements<UCombatInterface>())
 	{
-		FGameplayAbilitySpec* Spec = AbilitySystemComponentRef->FindAbilitySpecFromHandle(AbilityHandle);
-		if (Spec && Spec->Ability)
-		{
-			UGameplayAbility* Ability = Spec->Ability;
+		PlayerLevel = ICombatInterface::Execute_GetCharacterLevel(PlayerCharacterRef);
+	}
 
-			// Option 1: Get tags from the Ability directly
-			const FGameplayTagContainer& AbilityTags = Ability->GetAssetTags();
-
-			// Option 2: Get Activation Owned Tags (if that's what you want)
-			// const FGameplayTagContainer& ActivationTags = Spec->DynamicAbilityTags;
-
-			// Debug: Print or log the tags
-			for (const FGameplayTag& Tag : AbilityTags)
-			{
-				UE_LOG(LogTemp, Log, TEXT("Ability Tag: %s"), *Tag.ToString());
-			}
-		}
+	if (PlayerCharacterRef->Implements<UDP_PlayerInterface>())
+	{
+		OwnedWeapons = IDP_PlayerInterface::Execute_GetOwnedWeapons(PlayerCharacterRef);
 	}
 	
-	return UpgradeCardInfo->GetNumberOfUniqueCards(NumberOfCards);
+	return UpgradeCardInfo->GetNumberOfUniqueCards(NumberOfCards, PlayerLevel, OwnedWeapons);
 }
 
 void UDP_UpgradeWidgetController::GiveWeaponToPlayerCallback(const FGameplayTag& WeaponTag,
