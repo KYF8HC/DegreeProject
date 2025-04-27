@@ -1,6 +1,4 @@
 ﻿#include "FDP_GameplayTags.h"
-
-#include "AIController.h"
 #include "GameplayTagsManager.h"
 
 FDP_GameplayTags FDP_GameplayTags::GameplayTags;

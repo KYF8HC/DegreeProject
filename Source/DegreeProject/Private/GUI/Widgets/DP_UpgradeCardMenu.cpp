@@ -47,7 +47,7 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 			}
 		}
 	}
-	GetCardsInfo(bFirstTime);
+	GetCardsInfo();
 }
 
 void UDP_UpgradeCardMenu::OnEnd()

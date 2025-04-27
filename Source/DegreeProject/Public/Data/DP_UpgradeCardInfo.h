@@ -23,6 +23,7 @@ UENUM(BlueprintType)
 enum class EUpgradeCardType : uint8
 {
 	Weapon,
+	WeaponUpgrade,
 	Ability,
 	Effect,
 	None
@@ -80,7 +81,7 @@ struct FUpgradeCardWidgetProperties
 };
 
 UCLASS()
-class DEGREEPROJECT_API UDP_UpgradeCardInfo : public UDataAsset, public FAsyncMixin
+class DEGREEPROJECT_API UDP_UpgradeCardInfo : public UDataAsset
 {
 	GENERATED_BODY()
 
@@ -95,4 +96,8 @@ public:
 
 	
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+private:
+	bool ShouldIncludeCard(const FUpgradeCardInfo& Info, int PlayerLevel, const FGameplayTagContainer& OwnedWeapons) const;
+	bool CheckRarity(const FUpgradeCardInfo& Info) const;
 };

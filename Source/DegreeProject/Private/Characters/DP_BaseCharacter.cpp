@@ -1,5 +1,7 @@
 #include "Characters/DP_BaseCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "DegreeProject/DegreeProject.h"
 #include "GameplayAbilities/DP_AbilitySystemLibrary.h"
 
@@ -10,11 +12,19 @@ ADP_BaseCharacter::ADP_BaseCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+
+	WeaponMeshRef = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	WeaponMeshRef->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
 }
 
 UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponentRef;
+}
+
+FVector ADP_BaseCharacter::GetCombatSocketLocation()
+{
+	return FVector(); //WeaponStaticMesh->GetComponentLocation(); 
 }
 
 void ADP_BaseCharacter::Death()

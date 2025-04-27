@@ -9,6 +9,7 @@
 
 class UAttributeSet;
 class UAbilitySystemComponent;
+class UStaticMeshComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCharacterStatChanged, int32 /* Stat value*/);
 
@@ -28,7 +29,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSetRef; }
 	virtual int32 GetCharacterLevel_Implementation() override { return Level; }
-	virtual FVector GetCombatSocketLocation() override { return  WeaponSocketComponentRef->GetComponentLocation(); }
+	virtual FVector GetCombatSocketLocation() override;
 	virtual void Death() override;
 	virtual bool IsEnemy() override { return true; }
 
@@ -50,8 +51,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attribute Set")
 	TObjectPtr<UAttributeSet> AttributeSetRef{};
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Combat")
-	TObjectPtr<USceneComponent> WeaponSocketComponentRef{};
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Weapon")
+	TObjectPtr<UStaticMeshComponent> WeaponMeshRef{};
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character Defaults")
 	int32 Level{1};
@@ -62,12 +63,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Defaults")
 	ECharacterClass CharacterClass{ECharacterClass::Warrior};
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Visual Efefcts")
-	TObjectPtr<UMaterialInstance> DissolveMaterialInstanceRef{};
-	
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	//FName WeaponSocketName{TEXT("WeaponSocket")};
-
 	virtual void BeginPlay() override;
 
 };
