@@ -12,13 +12,16 @@ ADP_PlayerCharacter::ADP_PlayerCharacter()
 {
 	SetNetUpdateFrequency(100.0f);
 	PrimaryActorTick.bCanEverTick = false;
-
+	
 	SpringArmComponentRef = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponentRef->SetupAttachment(RootComponent);
 
 	CameraComponentRef = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponentRef->SetupAttachment(SpringArmComponentRef);
 
+	WeaponMeshRef = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	WeaponMeshRef->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
+	
 	AbilitySystemComponentRef = CreateDefaultSubobject<UDP_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponentRef->SetIsReplicated(true);
 	AbilitySystemComponentRef->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);

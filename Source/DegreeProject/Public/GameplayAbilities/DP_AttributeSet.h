@@ -66,16 +66,16 @@ public:
 	FGameplayAttributeData AbilityResource;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, AbilityResource)
 
-#pragma endregion 
-
-#pragma region Primary Attributes
-	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_MaxHealth)
+	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxHealth)
 
-	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_MaxAbilityResource)
+	UPROPERTY(BlueprintReadOnly, Category = "Vital Attributes", ReplicatedUsing = OnRep_MaxAbilityResource)
 	FGameplayAttributeData MaxAbilityResource;
 	ATTRIBUTE_ACCESSORS(UDP_AttributeSet, MaxAbilityResource)
+#pragma endregion 
+
+#pragma region Primary Attributes
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Primary Attributes", ReplicatedUsing = OnRep_Stamina)
 	FGameplayAttributeData Stamina;
@@ -217,6 +217,9 @@ public:
 private:
 	
 	void ShowFloatingText(FEffectProperties Props, float LocalIncomingDamage, bool bInIsDodgedHit, bool bInIsCriticalHit) const;
+	void HandleIfStamina(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props);
+	void HandleIfIncomingDamage(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props);
+	void HandleIfIncomingExperience(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props);
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	void SendExperienceEvent(const FEffectProperties& Props);
 };

@@ -35,4 +35,7 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
 	FGuid CardGuid{};
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "UpgradeCard")
+	ECardRarity CardRarity{ECardRarity::Common};
 };

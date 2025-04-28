@@ -23,6 +23,7 @@ void UDP_UpgradeCardMenu::GetCardsInfo()
 			WidgetProperties.Description = CardsInfo[i].Description;
 			WidgetProperties.UpgradeCardType = CardsInfo[i].UpgradeCardType;
 			WidgetProperties.UpgradeCardGuid = CardsInfo[i].UpgradeCardGuid;
+			WidgetProperties.CardRarity = CardsInfo[i].CardRarity;
 			CardWidgets[i]->SetWidgetProperties(WidgetProperties);
 		}
 	}
@@ -50,7 +51,7 @@ void UDP_UpgradeCardMenu::OnBegin(bool bFirstTime)
 	GetCardsInfo();
 }
 
-void UDP_UpgradeCardMenu::OnEnd()
+void UDP_UpgradeCardMenu::OnEnd()  
 {
 	Super::OnEnd();
 	EnableWidget(false);

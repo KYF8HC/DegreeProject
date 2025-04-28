@@ -25,6 +25,7 @@ float UDP_MMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEf
 	Stamina = FMath::Max<float>(Stamina, 0.f);
 
 	int32 PlayerLevel = 1;
+
 	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{
 		PlayerLevel = ICombatInterface::Execute_GetCharacterLevel(Spec.GetContext().GetSourceObject());

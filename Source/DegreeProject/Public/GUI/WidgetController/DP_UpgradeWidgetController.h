@@ -26,5 +26,5 @@ protected:
 
 	void GiveWeaponToPlayerCallback(const FGameplayTag& WeaponTag,
 	                                const TSubclassOf<UGameplayAbility>& WeaponClass) const;
-	void ApplyEffectToPlayerCallback(const TSubclassOf<UGameplayEffect>& EffectClass) const;
+	void ApplyEffectToPlayerCallback(const FGameplayTag& AttributeTag, const ECardRarity CardRarity, const TSubclassOf<UGameplayEffect>& EffectClass) const;
 };

@@ -10,19 +10,23 @@ void UDP_UpgradeWidgetController::GrantUpgrade(FGuid UniqueIdentifier, EUpgradeC
 	switch (CardType)
 	{
 	case EUpgradeCardType::Weapon:
-		UpgradeCardInfo->LoadWeaponClassByGuidAsync(UniqueIdentifier,
-												[this](const FGameplayTag& WeaponTag,
-													   const TSubclassOf<UGameplayAbility>& LoadedAbility)
-												{
-													GiveWeaponToPlayerCallback(WeaponTag, LoadedAbility);
-												});
+		UpgradeCardInfo->LoadClassByGuidAsync<UGameplayAbility>(
+			UniqueIdentifier,
+			&FUpgradeCardInfo::AbilityClass,
+			[this](const FGameplayTag& AttributeTag, const TSubclassOf<UGameplayAbility>& LoadedAbility, ECardRarity)
+			{
+				GiveWeaponToPlayerCallback(AttributeTag, LoadedAbility);
+			});
 		break;
 	case EUpgradeCardType::Effect:
-		UpgradeCardInfo->LoadEffectClassByGuidAsync(UniqueIdentifier,
-												[this](const TSubclassOf<UGameplayEffect>& LoadedEffect)
-												{
-													ApplyEffectToPlayerCallback(LoadedEffect);
-												});
+		UpgradeCardInfo->LoadClassByGuidAsync<UGameplayEffect>(
+			UniqueIdentifier,
+			&FUpgradeCardInfo::EffectClass,
+			[this](const FGameplayTag& AttributeTag, const TSubclassOf<UGameplayEffect>& LoadedEffect,
+			       ECardRarity CardRarity)
+			{
+				ApplyEffectToPlayerCallback(AttributeTag,  CardRarity, LoadedEffect);
+			});
 		break;
 	default:
 		break;
@@ -33,7 +37,7 @@ TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int
 {
 	int32 PlayerLevel = 1;
 	FGameplayTagContainer OwnedWeapons;
-	
+
 	if (PlayerCharacterRef->Implements<UCombatInterface>())
 	{
 		PlayerLevel = ICombatInterface::Execute_GetCharacterLevel(PlayerCharacterRef);
@@ -43,7 +47,7 @@ TArray<FUpgradeCardInfo> UDP_UpgradeWidgetController::GetNumberOfUniqueCards(int
 	{
 		OwnedWeapons = IDP_PlayerInterface::Execute_GetOwnedWeapons(PlayerCharacterRef);
 	}
-	
+
 	return UpgradeCardInfo->GetNumberOfUniqueCards(NumberOfCards, PlayerLevel, OwnedWeapons);
 }
 
@@ -55,11 +59,31 @@ void UDP_UpgradeWidgetController::GiveWeaponToPlayerCallback(const FGameplayTag&
 	ASC->GiveWeaponToPlayerByTag(WeaponTag, WeaponClass);
 }
 
-void UDP_UpgradeWidgetController::ApplyEffectToPlayerCallback(const TSubclassOf<UGameplayEffect>& EffectClass) const
+void UDP_UpgradeWidgetController::ApplyEffectToPlayerCallback(const FGameplayTag& AttributeTag,
+                                                              const ECardRarity CardRarity,
+                                                              const TSubclassOf<UGameplayEffect>& EffectClass) const
 {
-	const FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponentRef->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponentRef->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(PlayerCharacterRef);
 	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponentRef->MakeOutgoingSpec(
 		EffectClass, 1, EffectContextHandle);
+
+	float Scalar = 0.0f;
+
+	switch (CardRarity)
+	{
+	case ECardRarity::Common: Scalar = 1.05f;
+		break;
+	case ECardRarity::Rare: Scalar = 1.1f;
+		break;
+	case ECardRarity::Epic: Scalar = 1.25f;
+		break;
+	case ECardRarity::Legendary: Scalar = 1.5f;
+		break;
+	default: break;
+	}
+
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(EffectSpecHandle, AttributeTag, Scalar);
 
 	AbilitySystemComponentRef->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }

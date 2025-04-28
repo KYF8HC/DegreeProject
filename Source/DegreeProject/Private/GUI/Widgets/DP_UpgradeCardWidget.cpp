@@ -6,5 +6,6 @@ void UDP_UpgradeCardWidget::SetWidgetProperties(const FUpgradeCardWidgetProperti
 	ImageIcon = WidgetProperties.Icon;
 	CardType = WidgetProperties.UpgradeCardType;
 	CardGuid = WidgetProperties.UpgradeCardGuid;
+	CardRarity = WidgetProperties.CardRarity;
 	OnWidgetPropertiesSet();
 }

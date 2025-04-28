@@ -6,6 +6,26 @@ FDP_GameplayTags FDP_GameplayTags::GameplayTags;
 void FDP_GameplayTags::InitializeNativeGameplayTags()
 {
 	/*
+	 * Vital Attributes
+	 */
+
+	GameplayTags.Attributes_Vital_Health = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Vital.Health"),
+		FString("Health"));
+
+	GameplayTags.Attributes_Vital_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Vital.MaxHealth"),
+		FString("Max Health"));
+		
+	GameplayTags.Attributes_Vital_AbilityResource = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Vital.AbilityResource"),
+		FString("Ability Resource"));
+
+	GameplayTags.Attributes_Vital_MaxAbilityResource = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Vital.MaxAbilityResource"),
+		FString("Max Ability Resource"));
+	
+	/*
 	 * Primary Attributes
 	 */
 
@@ -15,7 +35,11 @@ void FDP_GameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.Attributes_Primary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.Armor"),
-		FString("Increases Armor"));
+		FString("Reduces Physical damage taken."));
+
+	GameplayTags.Attributes_Primary_MagicResist = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Primary.MagicResist"),
+		FString("Reduces Magic damage taken."));
 
 	/*
 	 * Class Specific Attributes

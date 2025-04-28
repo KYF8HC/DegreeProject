@@ -12,9 +12,6 @@ ADP_BaseCharacter::ADP_BaseCharacter()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
-
-	WeaponMeshRef = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
-	WeaponMeshRef->SetupAttachment(GetMesh(), TEXT("Staff_Socket"));
 }
 
 UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
@@ -24,7 +21,7 @@ UAbilitySystemComponent* ADP_BaseCharacter::GetAbilitySystemComponent() const
 
 FVector ADP_BaseCharacter::GetCombatSocketLocation()
 {
-	return FVector(); //WeaponStaticMesh->GetComponentLocation(); 
+	return WeaponMeshRef->GetComponentLocation(); //WeaponStaticMesh->GetComponentLocation(); 
 }
 
 void ADP_BaseCharacter::Death()
@@ -45,7 +42,7 @@ void ADP_BaseCharacter::AddToLevel(const int32 Amount)
 		Level = 1;
 
 	UE_LOG(LogTemp, Display, TEXT("Level = %d"), Level);
-	
+
 	OnLevelChanged.Broadcast(Level);
 }
 
@@ -60,8 +57,8 @@ void ADP_BaseCharacter::AddToExperiencePoints(const int32 Amount)
 	ExperiencePoints += Amount;
 	if (ExperiencePoints < 0)
 		ExperiencePoints = 0;
-	
-	OnExperiencePointsChanged.Broadcast(ExperiencePoints);	
+
+	OnExperiencePointsChanged.Broadcast(ExperiencePoints);
 }
 
 ECharacterClass ADP_BaseCharacter::GetCharacterClass_Implementation()

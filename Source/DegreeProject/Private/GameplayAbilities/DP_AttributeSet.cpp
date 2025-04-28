@@ -55,21 +55,20 @@ void UDP_AttributeSet::ShowFloatingText(FEffectProperties Props, const float Loc
 	}
 }
 
-void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+void UDP_AttributeSet::HandleIfStamina(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props)
 {
-	Super::PostGameplayEffectExecute(Data);
-
-	FEffectProperties Props;
-	SetEffectProperties(Data, Props);
-
-	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		const int OldMaxHealth = GetMaxHealth();
+		SetMaxHealth(80.0f + 2.5f * GetStamina() + 10.0f * ICombatInterface::Execute_GetCharacterLevel(Props.TargetCharacter));
+		const int NewMaxHealth = GetMaxHealth();
+
+		SetHealth(GetHealth() * NewMaxHealth / OldMaxHealth);
 	}
-	else if (Data.EvaluatedData.Attribute == GetAbilityResourceAttribute())
-	{
-		SetAbilityResource(FMath::Clamp(GetAbilityResource(), 0.0f, GetMaxAbilityResource()));
-	}
+}
+
+void UDP_AttributeSet::HandleIfIncomingDamage(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props)
+{
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
@@ -94,7 +93,10 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		const bool bIsCriticalHit = UDP_AbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
 		ShowFloatingText(Props, LocalIncomingDamage, bIsDodgedHit, bIsCriticalHit);
 	}
+}
 
+void UDP_AttributeSet::HandleIfIncomingExperience(const FGameplayEffectModCallbackData& Data, const FEffectProperties& Props)
+{
 	if (Data.EvaluatedData.Attribute == GetIncomingExperienceAttribute())
 	{
 		const float LocalIncomingExperience = GetIncomingExperience();
@@ -104,6 +106,23 @@ void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		{
 			IDP_PlayerInterface::Execute_AddToPlayerExperience(Props.SourceCharacter, LocalIncomingExperience);
 		}
+	}
+}
+
+void UDP_AttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	FEffectProperties Props;
+	SetEffectProperties(Data, Props);
+
+	HandleIfStamina(Data, Props);
+	HandleIfIncomingDamage(Data, Props);
+	HandleIfIncomingExperience(Data, Props);
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 }
 

@@ -6,7 +6,7 @@ FUpgradeCardInfo UDP_UpgradeCardInfo::FindUpgradeCardInfoForTag(const FGameplayT
 {
 	for (const FUpgradeCardInfo& WeaponInfo : UpgradeCardInfoArray)
 	{
-		if (WeaponInfo.AbilityTag == WeaponTag)
+		if (WeaponInfo.UpgradeTag == WeaponTag)
 		{
 			return WeaponInfo;
 		}
@@ -18,57 +18,6 @@ FUpgradeCardInfo UDP_UpgradeCardInfo::FindUpgradeCardInfoForTag(const FGameplayT
 	}
 
 	return FUpgradeCardInfo();
-}
-
-void UDP_UpgradeCardInfo::LoadWeaponClassByGuidAsync(const FGuid& UniqueIdentifier,
-                                                     TFunction<void(const FGameplayTag&,
-                                                                    const TSubclassOf<UGameplayAbility>&)> Callback)
-{
-	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
-	{
-		if (UpgradeCardInfo.UpgradeCardGuid == UniqueIdentifier)
-		{
-			
-			FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
-			TSoftClassPtr<UGameplayAbility> SoftClass = UpgradeCardInfo.AbilityClass;
-			FGameplayTag WeaponTag = UpgradeCardInfo.AbilityTag;
-
-			Streamable.RequestAsyncLoad(SoftClass.ToSoftObjectPath(), [WeaponTag, SoftClass, Callback]()
-			{
-				const TSubclassOf<UGameplayAbility> LoadedClass = SoftClass.Get();
-				Callback(WeaponTag, LoadedClass);
-			});
-
-			return;
-		}
-	}
-
-	// If not found
-	Callback(FGameplayTag(), nullptr);
-}
-
-void UDP_UpgradeCardInfo::LoadEffectClassByGuidAsync(const FGuid& UniqueIdentifier,
-                                                     TFunction<void(const TSubclassOf<UGameplayEffect>&)> Callback)
-{
-	for (const FUpgradeCardInfo& UpgradeCardInfo : UpgradeCardInfoArray)
-	{
-		if (UpgradeCardInfo.UpgradeCardGuid == UniqueIdentifier)
-		{
-			FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
-			TSoftClassPtr<UGameplayEffect> SoftClass = UpgradeCardInfo.EffectClass;
-
-			Streamable.RequestAsyncLoad(SoftClass.ToSoftObjectPath(), [SoftClass, Callback]()
-			{
-				const TSubclassOf<UGameplayEffect> LoadedClass = SoftClass.Get();
-				Callback(LoadedClass);
-			});
-
-			return;
-		}
-	}
-
-	// If not found
-	Callback(nullptr);
 }
 
 TArray<FUpgradeCardInfo> UDP_UpgradeCardInfo::GetNumberOfUniqueCards(
@@ -103,7 +52,7 @@ bool UDP_UpgradeCardInfo::ShouldIncludeCard(const FUpgradeCardInfo& Info, int Pl
 {
 	if (PlayerLevel % 6 == 0 || PlayerLevel == 1)
 	{
-		if (OwnedWeapons.HasTagExact(Info.AbilityTag))
+		if (OwnedWeapons.HasTagExact(Info.UpgradeTag))
 			return false;
 		
 		return Info.UpgradeCardType == EUpgradeCardType::Weapon;
@@ -111,7 +60,7 @@ bool UDP_UpgradeCardInfo::ShouldIncludeCard(const FUpgradeCardInfo& Info, int Pl
 
 	if (Info.UpgradeCardType != EUpgradeCardType::Weapon)
 	{
-		if (Info.UpgradeCardType == EUpgradeCardType::WeaponUpgrade && !OwnedWeapons.HasTagExact(Info.AbilityTag))
+		if (Info.UpgradeCardType == EUpgradeCardType::WeaponUpgrade && !OwnedWeapons.HasTagExact(Info.UpgradeTag))
 				return false;
 		
 		return CheckRarity(Info);
